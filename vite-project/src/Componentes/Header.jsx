@@ -1,3 +1,13 @@
- export function Header(){
-    <h1>Este es el encabezado   </h1>
- }
+import React from 'react';
+import '../Estilos/Header.css'
+const Header = ({ user }) => {
+  return (
+    <header className="header">
+      <div className="user-info">
+        <span>Hola</span>
+      </div>
+    </header>
+  );
+}
+
+export default Header;

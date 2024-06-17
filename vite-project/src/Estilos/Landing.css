@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    font-family: Arial, sans-serif;
+  }
+  
+  .main {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  .general-info, .materias {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .general-info h2, .materias h2 {
+    margin-top: 0;
+  }
+  
+  .progress {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .progress div {
+    text-align: center;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  table th {
+    background-color: #f4f4f4;
+  }
+  

@@ -1,0 +1,10 @@
+.header {
+    background-color: #f4f4f4;
+    padding: 10px;
+    text-align: right;
+  }
+  
+  .header .user-info {
+    font-weight: bold;
+  }
+    
