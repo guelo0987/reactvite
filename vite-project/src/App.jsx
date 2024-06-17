@@ -1,14 +1,20 @@
-//import { BrowserRoute, Routes, Route } from 'react-router-dom';
-import React from 'react';
-//import { InicioSesion } from './Paginas/InicioSesion.jsx';
-import Landing from './Componentes/Landing.jsx';
-//import { Servicio } from './Paginas/Servicios.jsx';
-//import {Home} from './Paginas/Home.jsx'
-//import { Contactos } from './Paginas/Contactanos.jsx';
-
-export function App() {
+import React from "react"
+import "./Estilos/App.css"
+//import {InicioSesion} from "./Paginas/InicioSesion.jsx"
+import { Header } from "./Componentes/Header.jsx"
+import { Sidebar } from "./Componentes/Sidebar2"
+export  function App() {
     return (
-       
-        <Landing/>
+      <div >
+        <Header/>
+
+
+        <main>
+          <Sidebar/>
+        </main>
+        
+
+      </div>
+      
     )
-}
+  }

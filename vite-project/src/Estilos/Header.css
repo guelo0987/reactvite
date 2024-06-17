@@ -1,10 +1,33 @@
 .header {
-    background-color: #f4f4f4;
-    padding: 10px;
-    text-align: right;
-  }
-  
-  .header .user-info {
-    font-weight: bold;
-  }
-    
+  background-color: #F80000;
+  color: #fff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__logo img{
+  width: 120px;
+  height:120px;
+  margin-right: 20px;
+}
+
+.header__user {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.header__user img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.header__user span {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 5px;
+}
