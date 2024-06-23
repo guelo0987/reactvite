@@ -1,71 +1,144 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-weight: bold;
-    background-color: #f0f0f0; /* Esto es opcional, para mejorar el contraste */
-    
+:root {
+  --Fondo: #050A30;
+  --blue: #2F80ED;
+  --white: #ffffff;
 }
 
-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+* {
+  background-color: var(--Fondo);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.InicioGeneral {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding: 15px;
+p {
+  color: orange;
 }
 
-.Inicio {
-    width: 22rem;
-    height: 3.25rem;
-    padding: 10px 40px;
-    border-radius: 20px;
-    border: 1px solid #E0E0E0;
-    background: #FFF;
-    font-size: 15px;
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+.login {
+  display: flex;
+  justify-content: flex-end; /* Alinea el formulario a la derecha */
 }
 
-button {
-    width: 22rem;
-    height: 3.25rem;
-    border-radius: 20px;
-    background: green;
-    color: white;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
+
+.image-container {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120%;
+  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); /* Recorta la mitad izquierda de la imagen */
+  transform: translateX(-50%); /* Centra la parte recortada horizontalmente */  
 }
 
-.link-recuperacion {
-    padding-top: 10px;
-    color: #000; /* Cambiado a negro para mayor visibilidad */
-    text-decoration: none;
+.image-container img {
+  
+  max-width: 100%;
+  height: auto;
 }
 
-.link-recuperacion:hover {
-    text-decoration: underline;
+.login-container {
+  width: fit-content; 
+  text-align: center; 
+  
 }
 
-img {
-    width: 100px; /* Ajusta el tamaño según sea necesario */
-    margin-bottom: 20px;
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
 }
-.Container{
-    display: flex;
-    background-color: #BCBBBB;
-    border: none;
-    border-radius: 50px;
-   
+
+.logo img {
+  width: 150px;
+  height: auto;
+}
+
+.logo p {
+  margin-top: 10px;
+  font-size: 1.2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: var(--white);
+  /* Elimina la propiedad align-self: center */
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--white);
+  color: var(--Fondo);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  background-color: var(--white);
+}
+
+.form-group input {
+  margin-bottom: 20px;
+  background-color: var(--white);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.forgot-password {
+  text-align: left;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.forgot-password a {
+  text-decoration: none;
+  color: var(--blue);
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  padding: 15px 20px;
+  background-color: var(--white);
+  color: var(--blue);
+  border-color: var(--Fondo);
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.login-button:hover {
+  background-color: var(--Fondo);
+  color: var(--white);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.forgot-password {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.forgot-password a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
 }

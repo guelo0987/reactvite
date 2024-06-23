@@ -4,7 +4,7 @@ import React from 'react';
 export function Sidebar(){
     return (
       <aside className="sidebar">
-        <nav>
+        <nav  >
           <ul>
             <li>
               <a href="#">
