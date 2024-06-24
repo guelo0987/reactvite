@@ -1,95 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 :root {
   --Fondo: #050A30;
   --blue: #2F80ED;
   --white: #ffffff;
+  --orange: orange; /* Agregamos una variable para el color naranja */
 }
 
 * {
-  background-color: var(--Fondo);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body{
+  background-color: var(--Fondo);
 }
 
-p {
-  color: orange;
-}
-
-.login {
+section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
   display: flex;
-  justify-content: flex-end; /* Alinea el formulario a la derecha */
 }
 
-
-.image-container {
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120%;
-  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); /* Recorta la mitad izquierda de la imagen */
-  transform: translateX(-50%); /* Centra la parte recortada horizontalmente */  
+section .image-container {
+  position: relative;
+  width: 40%;
+  height: 100%;
+  overflow: hidden; /* Evita el desbordamiento de la imagen */
 }
 
-.image-container img {
-  
-  max-width: 100%;
-  height: auto;
+section .image-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .login-container {
-  width: fit-content; 
-  text-align: center; 
-  
+  width: 60%; /* Ajustado para ocupar el 50% del ancho */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--Fondo);
+  padding: 20px;
 }
 
 .logo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px;
+ /* Ajusta el margen superior para posicionar cerca del tope */
+  position: relative;
+  margin-top: -140px;
+  z-index: 2;
 }
 
 .logo img {
-  width: 150px;
+  width: 400px;
   height: auto;
+  margin-top: -25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* Centra el texto horizontalmente */
 }
 
 .logo p {
-  margin-top: 10px;
-  font-size: 1.2rem;
+  font-weight:  300;
+  margin-top: -90px;
+  font-size: 2rem;
+  color: var(--orange); /* Usamos la variable de color naranja */
+  text-align: center; /* Centra el texto horizontalmente */
+  display: block; /* Hace que el párrafo sea un bloque */
+}
+.logo p span {
+  display: block; /* Hace que el span sea un bloque para que se muestre en una nueva línea */
 }
 
+
 .login-form {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 400px;
   padding: 20px;
   border-radius: 8px;
   background-color: var(--white);
-  /* Elimina la propiedad align-self: center */
+  position: relative;
+  z-index: 1;
+  text-align: center; /* Centra los elementos inline/inline-block horizontalmente */
 }
+
 .form-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--white);
-  color: var(--Fondo);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 10px;
-  background-color: var(--white);
+  margin: 20px;
+  font-size: 23px;
+  font-weight: bold;
 }
 
 .form-group input {
-  margin-bottom: 20px;
-  background-color: var(--white);
+ 
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 16px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -98,6 +124,8 @@ p {
   text-align: left;
   width: 100%;
   margin: 10px 0;
+  background-color: var(--white);
+  padding: 10px;
 }
 
 .forgot-password a {
@@ -110,12 +138,12 @@ p {
 }
 
 .login-button {
-  padding: 15px 20px;
+  padding: 20px 80px;
   background-color: var(--white);
   color: var(--blue);
   border-color: var(--Fondo);
-  border-radius: 25px;
-  font-size: 1rem;
+  border-radius: 50px;
+  font-size: 25px;
   cursor: pointer;
   margin-top: 20px;
 }
@@ -124,21 +152,6 @@ p {
   background-color: var(--Fondo);
   color: var(--white);
 }
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.forgot-password {
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.forgot-password a {
-  color: var(--blue);
-  text-decoration: none;
-}
-
-.forgot-password a:hover {
-  text-decoration: underline;
+.forgot-password{
+  font-size: 18px;
 }

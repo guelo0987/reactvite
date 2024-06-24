@@ -30,16 +30,18 @@ export function Login() {
   };
 
   return (
-    <div className="login">
+  <section>
+
       <div className="image-container">
         <img src={exampleImage} alt="Imagen Ejemplo" />
       </div>
       <div className="login-container">
-        <div className="logo">
+      <div className="logo">
           <img src={logoImage} alt="Logo de la Universidad" />
-          <p>UNIVERSIDAD DE INNOVACIÓN TECNOLÓGICA</p>
+          <p>UNIVERSIDAD DE INNOVACIÓN <span>TECNOLÓGICA</span></p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">
+       
           <div className="form-group">
             <label htmlFor="username">Usuario:</label>
             <input
@@ -66,6 +68,7 @@ export function Login() {
           <button type="submit" className="login-button">Log In</button>
         </form>
       </div>
-    </div>
+
+    </section> 
   );
 }
