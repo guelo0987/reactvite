@@ -74,7 +74,7 @@ section .image-container img {
 
 .logo p {
   font-weight:  300;
-  margin-top: -90px;
+  margin-top: -40px;
   font-size: 2rem;
   color: var(--orange); /* Usamos la variable de color naranja */
   text-align: center; /* Centra el texto horizontalmente */
@@ -86,7 +86,7 @@ section .image-container img {
 
 
 .login-form {
-  margin-top: 20px;
+  margin-top: 40px;
   width: 100%;
   max-width: 400px;
   padding: 20px;
