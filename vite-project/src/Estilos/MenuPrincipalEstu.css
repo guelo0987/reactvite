@@ -1,0 +1,56 @@
+.main{
+  margin-left: 255px;
+}
+.course-cards {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  margin-left: -12px; /* Compensación por el margen negativo */
+}
+
+.course-card {
+  margin: 12px;
+  flex: 0 0 calc(25% - 24px); /* Ancho fijo para cada tarjeta con margen ajustado */
+  max-width: calc(25% - 24px); /* Ancho máximo para asegurar que no se superpongan */
+  background-color: var(--course-card-bg-color, white);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centrar verticalmente */
+  align-items: center  /* Centrar horizontalmente */
+}
+
+.course-card-content {
+  display: flex;
+  flex-direction: column; /* Asegura que el contenido esté apilado verticalmente */
+  justify-content: center; /* Centrar verticalmente */
+  align-items: center; /* Centrar horizontalmente */
+  height: 100%; /* Ocupa toda la altura disponible dentro de la tarjeta */
+}
+
+.course-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 12px; /* Espacio entre el título y los detalles */
+  text-align: center; /* Alinear el texto al centro */
+}
+
+.course-card-details {
+  display: flex;
+  flex-direction: column; /* Asegura que los detalles estén apilados verticalmente */
+  justify-content: center; /* Centrar verticalmente */
+  align-items: center; /* Centrar horizontalmente */
+}
+
+.course-card-detail {
+  font-size: 0.9rem;
+  color: var(--course-card-text-color, rgb(66, 66, 66));
+  margin-bottom: 8px; /* Espacio entre detalles */
+  text-align: center; /* Alinear el texto al centro */
+}
+
+.course-card-detail-label {
+  font-weight: bold;
+  margin-right: 4px;
+}
