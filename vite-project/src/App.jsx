@@ -5,9 +5,10 @@ import "./Estilos/App.css"
 //import { Sidebar } from "./Componentes/Sidebar2"
 //import {Landing} from "./Paginas/Landing.jsx";
  //import { Ejemplo } from "./Componentes/ejemplo.jsx"
-import { MenuPrincipal } from "./Paginas/MenuPrincipalEstu"
+//import { MenuPrincipal } from "./Paginas/MenuPrincipalEstu"
+import {Calendario} from "./Paginas/Calendario.jsx"
  export  function App() {
     return (
-    <MenuPrincipal/>
+    <Calendario/>
     )
   }

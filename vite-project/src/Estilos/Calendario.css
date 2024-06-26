@@ -1,0 +1,110 @@
+
+/* General container styles */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f4f8;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Header styles */
+h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Calendar container styles */
+.react-calendar {
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+}
+
+/* Calendar tile styles */
+.react-calendar__tile {
+    max-width: 100%;
+    height: auto;
+    padding: 20px;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background-color: #e6f7ff;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+/* Calendar active tile styles */
+.react-calendar__tile--now {
+    background: #ffeb3b;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.react-calendar__tile--active {
+    background-color: #1890ff;
+    color: white;
+    border-radius: 50%;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background-color: #40a9ff;
+}
+
+/* Calendar navigation styles */
+.react-calendar__navigation button {
+    min-width: 44px;
+    background: none;
+    border: none;
+    color: #1890ff;
+    font-size: 1.2em;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.react-calendar__navigation button:hover {
+    color: #40a9ff;
+}
+
+/* Calendar weekday styles */
+.react-calendar__month-view__weekdays {
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+    font-size: 1.1em;
+    padding: 10px 0;
+}
+
+/* Calendar day styles */
+.react-calendar__month-view__days__day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    margin: 2px;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.react-calendar__month-view__days__day--weekend {
+    color: #d9534f;
+}

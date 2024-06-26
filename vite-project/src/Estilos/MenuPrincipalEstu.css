@@ -1,56 +1,105 @@
-.main{
-  margin-left: 255px;
-}
-.course-cards {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 20px;
-  margin-left: -12px; /* Compensación por el margen negativo */
-}
+ :root{
+  --letraCartas:#0C1E33;
 
-.course-card {
-  margin: 12px;
-  flex: 0 0 calc(25% - 24px); /* Ancho fijo para cada tarjeta con margen ajustado */
-  max-width: calc(25% - 24px); /* Ancho máximo para asegurar que no se superpongan */
-  background-color: var(--course-card-bg-color, white);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Centrar verticalmente */
-  align-items: center  /* Centrar horizontalmente */
-}
+ }
+  
+ 
+ .main{
+    margin-left: 265px;
+    font-family: "Poppins", sans-serif;
 
-.course-card-content {
-  display: flex;
-  flex-direction: column; /* Asegura que el contenido esté apilado verticalmente */
-  justify-content: center; /* Centrar verticalmente */
-  align-items: center; /* Centrar horizontalmente */
-  height: 100%; /* Ocupa toda la altura disponible dentro de la tarjeta */
-}
+  }
+  .course-cards {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-left: -12px; /* Compensación por el margen negativo */
+  }
 
-.course-card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 12px; /* Espacio entre el título y los detalles */
-  text-align: center; /* Alinear el texto al centro */
-}
+  .course-card {
+    margin: 12px;
+    flex: 0 0 calc(25% - 24px); /* Ancho fijo para cada tarjeta con margen ajustado */
+    max-width: calc(25% - 24px); /* Ancho máximo para asegurar que no se superpongan */
+    background-color: var(--course-card-bg-color, white);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrar verticalmente */
+    align-items: center  /* Centrar horizontalmente */
+  }
 
-.course-card-details {
-  display: flex;
-  flex-direction: column; /* Asegura que los detalles estén apilados verticalmente */
-  justify-content: center; /* Centrar verticalmente */
-  align-items: center; /* Centrar horizontalmente */
-}
+  .course-card-content {
+    display: flex;
+    flex-direction: column; /* Asegura que el contenido esté apilado verticalmente */
+    justify-content: center; /* Centrar verticalmente */
+    align-items: left; /* Centrar horizontalmente */
+    height: 100%; /* Ocupa toda la altura disponible dentro de la tarjeta */
+  }
 
-.course-card-detail {
-  font-size: 0.9rem;
-  color: var(--course-card-text-color, rgb(66, 66, 66));
-  margin-bottom: 8px; /* Espacio entre detalles */
-  text-align: center; /* Alinear el texto al centro */
-}
+  .course-card-title {
+    color:var(--letraCartas);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: left;
+    border-bottom: 1px solid #000000; /* Agrega una línea horizontal debajo del título */
+  }
 
-.course-card-detail-label {
-  font-weight: bold;
-  margin-right: 4px;
-}
+  .course-card-details {
+    display: flex;
+    flex-direction: column; /* Asegura que los detalles estén apilados verticalmente */
+    justify-content: center; /* Centrar verticalmente */
+    align-items: left; /* Centrar horizontalmente */
+  }
+
+  .course-card-detail {
+    color: var(--letraCartas);
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 15px; /* Espacio entre detalles */
+    text-align: left; /* Alinear el texto al centro */
+  }
+
+  .course-card-detail-label {
+    font-weight: bold;
+    margin-right: 4px;
+  }
+
+
+  /*Parte de arrbia de las cartas.*/
+  .user-profile {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .user-profile-content {
+    display: flex; /* Make the content elements side-by-side */
+  }
+
+  .profile-avatar-landing {
+    width: 200px; /* Adjust the width as needed */
+    height: auto;
+    margin-right: 20px; /* Space between image and user information */
+  }
+
+  .user-profile-details {
+    flex: 1; /* Allow remaining space for text content */
+  }
+
+  .user-profile-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .user-profile-detail {
+    margin-bottom: 5px;
+  }
+
+  .user-profile-detail-label {
+    font-weight: bold;
+    margin-right: 5px;
+  }
