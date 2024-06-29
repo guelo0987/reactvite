@@ -1,6 +1,6 @@
 // Schedule.js
 import React from 'react';
-import '../Estilos/Horario.css';
+import '../Estilos/EstPaginas/Horario.css';
 import Header from "../Componentes/Header.jsx"
 import Sidebar from '../Componentes/Sidebar2.jsx';
 

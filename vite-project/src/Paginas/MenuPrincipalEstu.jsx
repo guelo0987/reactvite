@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from '../Componentes/Sidebar2.jsx';
 import Header from '../Componentes/Header.jsx';
-import "../Estilos/MenuPrincipalEstu.css"
+import "../Estilos/EstPaginas/MenuPrincipalEstu.css"
 import PhotoPerfil from '../assets/perfil sin foto.png'; // Ajusta la ruta según la ubicación real de tus imágenes
 
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../Estilos/InicioSesion.css"; // Asegúrate de que esta ruta sea correcta y contenga tus estilos CSS
+import "../Estilos/EstPaginas/InicioSesion.css"; // Asegúrate de que esta ruta sea correcta y contenga tus estilos CSS
 import logoImage from '../assets/logoUni.png'; // Ajusta la ruta según la ubicación real de tus imágenes
 import exampleImage from '../assets/LoginIma.png'; // Ajusta la ruta según la ubicación real de tus imágenes
 

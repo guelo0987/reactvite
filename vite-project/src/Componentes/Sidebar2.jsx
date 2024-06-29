@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../Estilos/Sidebar.css'; // Asegúrate de que la ruta sea correcta
+import '../Estilos/EstComponentes/Sidebar.css'; // Asegúrate de que la ruta sea correcta
 import logoImage from '../assets/logoUni.png'; // Ajusta la ruta según la ubicación real de tus imágenes
 import { Link, useNavigate } from 'react-router-dom';
 import LogoutModal from '../Componentes/VentanaLogOut'; // Importar el componente del modal

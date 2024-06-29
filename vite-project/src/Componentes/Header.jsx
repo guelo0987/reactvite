@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Estilos/Header.css';
+import '../Estilos/EstComponentes/Header.css';
 
 const Header = () => (
   <header className="main-header">

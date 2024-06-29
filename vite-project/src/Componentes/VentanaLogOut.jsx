@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../Estilos/VentanaLogOut.css'; // Asegúrate de crear y ajustar este archivo CSS
+import '../Estilos/EstComponentes/VentanaLogOut.css'; // Asegúrate de crear y ajustar este archivo CSS
 
 const LogoutModal = ({ isVisible, onClose }) => {
     const navigate = useNavigate();

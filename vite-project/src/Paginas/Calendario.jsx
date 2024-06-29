@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
-import '../Estilos/Calendario.css';
+import '../Estilos/EstPaginas/Calendario.css';
 
 import Sidebar from '../Componentes/Sidebar2.jsx';
 import Header from '../Componentes/Header.jsx';
