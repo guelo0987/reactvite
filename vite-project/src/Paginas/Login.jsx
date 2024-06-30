@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../Estilos/EstPaginas/InicioSesion.css"; // Asegúrate de que esta ruta sea correcta y contenga tus estilos CSS
+import styles from "../Estilos/EstPaginas/InicioSesion.module.css"; // Asegúrate de que esta ruta sea correcta y contenga tus estilos CSS
 import logoImage from '../assets/logoUni.png'; // Ajusta la ruta según la ubicación real de tus imágenes
 import exampleImage from '../assets/LoginIma.png'; // Ajusta la ruta según la ubicación real de tus imágenes
 
@@ -16,18 +16,18 @@ export function Login() {
   };
 
   return (
-    <div className="login-page">
-      <section className='Login-Sect'>
-        <div className="image-container">
+    <div className={styles["login-page"]}>
+      <section className={styles["Login-Sect"]}>
+        <div className={styles["image-container"]}>
           <img src={exampleImage} alt="Imagen Ejemplo" />
         </div>
-        <div className="login-container">
-          <div className="logo">
+        <div className={styles["login-container"]}>
+          <div className={styles["logo"]}>
             <img src={logoImage} alt="Logo de la Universidad" />
             <p>UNIVERSIDAD DE INNOVACIÓN <span>TECNOLÓGICA</span></p>
           </div>
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group">
+          <form onSubmit={handleSubmit} className={styles["login-form"]}>
+            <div className={styles["form-group"]}>
               <label htmlFor="username">Usuario:</label>
               <input
                 type="text"
@@ -37,7 +37,7 @@ export function Login() {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className={styles["form-group"]}>
               <label htmlFor="password">Contraseña:</label>
               <input
                 type="password"
@@ -47,13 +47,13 @@ export function Login() {
                 required
               />
             </div>
-            <div className="forgot-password">
+            <div className={styles["forgot-password"]}>
               <a href="#">Olvido Contraseña?</a>
             </div>
-            <button type="submit" className="login-button">Log In</button>
+            <button type="submit" className={styles["login-button"]}>Log In</button>
           </form>
         </div>
-      </section> 
+      </section>
     </div>
   );
 }
