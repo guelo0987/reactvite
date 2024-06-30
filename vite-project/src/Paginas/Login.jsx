@@ -1,18 +1,44 @@
-import React, { useState } from 'react';
-import styles from "../Estilos/EstPaginas/InicioSesion.module.css"; // Asegúrate de que esta ruta sea correcta y contenga tus estilos CSS
-import logoImage from '../assets/logoUni.png'; // Ajusta la ruta según la ubicación real de tus imágenes
-import exampleImage from '../assets/LoginIma.png'; // Ajusta la ruta según la ubicación real de tus imágenes
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../Componentes/AutenticacionUsuario';
+import styles from "../Estilos/EstPaginas/InicioSesion.module.css";
+import logoImage from '../assets/logoUni.png';
+import exampleImage from '../assets/LoginIma.png';
 
 export function Login() {
+  const navigate = useNavigate();
+  const { user, login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        navigate('/AdminDashboard');
+      } else {
+        navigate('/Menu');
+      }
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes enviar los datos del formulario al backend
-    console.log('Username:', username);
-    console.log('Password:', password);
-    // ... (resto del código de handleSubmit)
+    
+    if (username === 'usuario' && password === '123456') {
+      setError(false);
+      login({ username, role: 'user' });
+      console.log('Login exitoso como usuario estándar! Redirigiendo...');
+      navigate('/Menu');
+    } else if (username === 'admin' && password === 'admin123') {
+      setError(false);
+      login({ username, role: 'admin' });
+      console.log('Login exitoso como administrador! Redirigiendo...');
+      navigate('/AdminDashboard');
+    } else {
+      setError(true);
+      console.log('Credenciales incorrectas');
+    }
   };
 
   return (
@@ -47,6 +73,7 @@ export function Login() {
                 required
               />
             </div>
+            {error && <p className={styles["error-message"]}>Credenciales incorrectas. Inténtalo de nuevo.</p>}
             <div className={styles["forgot-password"]}>
               <a href="#">Olvido Contraseña?</a>
             </div>

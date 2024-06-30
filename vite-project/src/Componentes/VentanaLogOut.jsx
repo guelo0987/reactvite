@@ -1,13 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../Estilos/EstComponentes/VentanaLogOut.css'; // Asegúrate de crear y ajustar este archivo CSS
+import { useAuth } from '../Componentes/AutenticacionUsuario'; // Asegúrate de que la ruta sea correcta
+import '../Estilos/EstComponentes/VentanaLogOut.css';
 
 const LogoutModal = ({ isVisible, onClose }) => {
     const navigate = useNavigate();
+    const { logout } = useAuth(); // Obtenemos la función logout del contexto
 
     const handleConfirm = () => {
-        // Aquí puedes agregar cualquier lógica adicional de cierre de sesión
-        navigate('/'); // Redirigir a la pantalla de login
+        logout(); // Llamamos a la función logout
+        navigate('/'); // Redirigimos a la pantalla de login
+        onClose(); // Cerramos el modal
     };
 
     if (!isVisible) return null;

@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^3.4.4",
+    "i": "^0.3.7",
+    "jspdf": "^2.5.1",
+    "npm": "^10.8.1",
+    "pdfjs-dist": "^4.3.136",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
     "react-dom": "^18.3.1",
