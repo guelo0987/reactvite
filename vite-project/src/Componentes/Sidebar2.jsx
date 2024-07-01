@@ -40,7 +40,7 @@ const Sidebar = () => {
           <div className={styles.sidebarSection}>
             <h2 className={styles.sidebarSectionTitle}>ACADEMIC</h2>
             <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/7a26fafeb4a6624d9037e579936f0a47d9eb64f8dfef241ec94cb5772681e905?apiKey=729dc09cd15c473da7916659c4854519&" text="Calendario academico" to="/calendario" />
-            <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/f0324d01f8677df18c7ac2ee1f4378e9edfab3672350ddcef5bb0cf161d5c053?apiKey=729dc09cd15c473da7916659c4854519&" text="Reporte de calificaciones" to="/reporte-calificaciones" />
+            <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/f0324d01f8677df18c7ac2ee1f4378e9edfab3672350ddcef5bb0cf161d5c053?apiKey=729dc09cd15c473da7916659c4854519&" text="Reporte de calificaciones" to="/ReporteCalificaciones" />
             <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/bf818e7e50cc09b3da92c16660dd391e8226cdc76995221c123c0aafc6cbbbcf?apiKey=729dc09cd15c473da7916659c4854519&" text="Horario" to="/horario" />
             <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/fbaf764739bed9f4adb54b5e0753a535425dd0492e49badacb3031d1f3a5e0ed?apiKey=729dc09cd15c473da7916659c4854519&" text="Pensum de carrera" to="/pensum-carrera" />
             <h2 className={`${styles.sidebarSectionTitle} mt-40 max-md:mt-10`}>Caja</h2>
