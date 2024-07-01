@@ -12,6 +12,7 @@ import { HojaPago } from './Paginas/HojaPago.jsx';
 import { CuentaPorPagar } from './Paginas/CuentaPorPagar.jsx';
 import { Horario } from './Paginas/Horario.jsx';
 import { AutenticacionUsuario } from './Componentes/AutenticacionUsuario.jsx';
+import { ReporteCalificaciones } from './Paginas/ReporteCalificaciones.jsx';
 import ProtectedRoute from './Componentes/RutaProtegida.jsx';
 
 const router = createBrowserRouter([
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/ReporteCalificaciones",
+    element:<ReporteCalificaciones/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
