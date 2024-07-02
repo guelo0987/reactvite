@@ -142,3 +142,10 @@ th {
     border-radius: 4px;
     cursor: pointer;
 }
+.completed td {
+    text-decoration: line-through;
+}
+
+.completed input[type="checkbox"] {
+    checked: true;
+}

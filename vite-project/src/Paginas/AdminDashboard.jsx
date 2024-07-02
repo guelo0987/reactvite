@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import SidebarAdmin from "../Componentes/SidebarAdmin.jsx";
 import Header from "../Componentes/Header.jsx";
+import { TaskModal } from "../Componentes/TaskModal.jsx";
 import "../Estilos/EstPaginas/AdminDashboard.css";
 import PhotoPerfil from '../assets/perfil sin foto.png';
 
@@ -19,10 +20,65 @@ export function AdminDashboard() {
         { label: "Secciones", value: "7,500" }
     ];
 
-    const tasks = [
-        { name: "John Doe", subject: "English", type: "Freelance", level: "Fluent" },
-        // ... más tareas
+    const initialTasks = [
+        { task: "Preparar informe", description: "Informe de ventas trimestral", dueDate: "2024-07-15", completed: false },
+        // ... más tareas (hasta completar un número mayor a 5 para probar la paginación)
     ];
+
+    const [tasks, setTasks] = useState(initialTasks);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+    const [taskToEdit, setTaskToEdit] = useState(null);
+    const tasksPerPage = 5;
+
+    const handleAddTask = () => {
+        setTaskToEdit(null);
+        setIsTaskModalOpen(true);
+    };
+
+    const handleDeleteTask = (index) => {
+        const updatedTasks = tasks.filter((_, i) => i !== index);
+        setTasks(updatedTasks);
+    };
+
+    const handleEditTask = (index) => {
+        setTaskToEdit({ ...tasks[index], index });
+        setIsTaskModalOpen(true);
+    };
+
+    const handleSaveTask = (task) => {
+        if (task.index !== undefined) {
+            const updatedTasks = tasks.map((t, i) =>
+                i === task.index ? task : t
+            );
+            setTasks(updatedTasks);
+        } else {
+            setTasks([...tasks, task]);
+        }
+    };
+
+    const handleToggleTask = (index) => {
+        const updatedTasks = tasks.map((task, i) =>
+            i === index ? { ...task, completed: !task.completed } : task
+        );
+        setTasks(updatedTasks);
+    };
+
+    const indexOfLastTask = currentPage * tasksPerPage;
+    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+    const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
+
+    const nextPage = () => {
+        if (currentPage < Math.ceil(tasks.length / tasksPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     return (
         <div className="admin-dashboard">
@@ -52,36 +108,53 @@ export function AdminDashboard() {
 
                     <div className="tasks-section">
                         <h2>Tareas</h2>
+                        <button onClick={handleAddTask} className="add-task-btn">+</button>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Subject</th>
-                                    <th>Type</th>
-                                    <th>Level</th>
+                                    <th></th>
+                                    <th>Tarea</th>
+                                    <th>Fecha Límite</th>
+                                    <th>Descripción</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {tasks.map((task, index) => (
-                                    <tr key={index}>
-                                        <td>{task.subject}</td>
-                                        <td>{task.type}</td>
-                                        <td>{task.level}</td>
+                                {currentTasks.map((task, index) => (
+                                    <tr key={index} className={task.completed ? "completed" : ""}>
                                         <td>
-                                            <button className="view-btn">View</button>
-                                            <button className="edit-btn">Edit</button>
+                                            <input
+                                                type="checkbox"
+                                                checked={task.completed}
+                                                onChange={() => handleToggleTask(index)}
+                                            />
+                                        </td>
+                                        <td>{task.task}</td>
+                                        <td>{task.dueDate}</td>
+                                        <td>{task.description}</td>
+                                        <td>
+                                            <button onClick={() => handleEditTask(index)} className="edit-btn">Edit</button>
+                                            <button onClick={() => handleDeleteTask(index)} className="delete-btn">Delete</button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                         <div className="pagination">
-                            <span>Page 1 of 10</span>
-                            <button className="next-btn">Next</button>
+                            <button onClick={prevPage} disabled={currentPage === 1} className="prev-btn">Prev</button>
+                            <span>Page {currentPage} of {Math.ceil(tasks.length / tasksPerPage)}</span>
+                            <button onClick={nextPage} disabled={currentPage === Math.ceil(tasks.length / tasksPerPage)} className="next-btn">Next</button>
                         </div>
                     </div>
                 </div>
             </div>
+            {isTaskModalOpen && (
+                <TaskModal
+                    task={taskToEdit}
+                    onSave={handleSaveTask}
+                    onClose={() => setIsTaskModalOpen(false)}
+                />
+            )}
         </div>
     );
 }
