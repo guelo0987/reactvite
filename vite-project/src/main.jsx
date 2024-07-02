@@ -14,6 +14,8 @@ import { AutenticacionUsuario } from './Componentes/AutenticacionUsuario.jsx';
 import { ReporteCalificaciones } from './Paginas/ReporteCalificaciones.jsx';
 import ProtectedRoute from './Componentes/RutaProtegida.jsx';
 import { AdminDashboard } from './Paginas/AdminDashboard.jsx';
+import { EstudianteAgregarMaterias } from './Paginas/EstudianteAgregarMaterias.jsx';
+import { EstudianteRetirarMaterias } from './Paginas/EstudianteRetirarMaterias.jsx';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -83,7 +85,23 @@ const router = createBrowserRouter([
         <AdminDashboard />
       </ProtectedRoute>
     ),
-  }
+  },
+  {
+    path:"/agregar-materias",
+    element:(
+      <ProtectedRoute>
+        <EstudianteAgregarMaterias/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path:"/retirar-materias",
+    element:(
+      <ProtectedRoute>
+        <EstudianteRetirarMaterias/>
+      </ProtectedRoute>
+    )
+  },
 
 ]);
 
