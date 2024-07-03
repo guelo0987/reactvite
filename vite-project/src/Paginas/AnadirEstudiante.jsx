@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import styles from '../Estilos/EstPaginas/AnadirEstudiante.module.css'; // Importamos los estilos CSS Modules
+import React, { useState, useEffect } from 'react';
+import styles from '../Estilos/EstPaginas/AnadirEstudiante.module.css';
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
@@ -18,6 +18,16 @@ export function AnadirEstudiante() {
   });
 
   const [errors, setErrors] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timer = setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000); // Ocultar mensaje después de 3 segundos
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessMessage]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,8 +60,22 @@ export function AnadirEstudiante() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Formulario válido:', formData);
-      // Aquí iría la lógica para enviar los datos
+      // Aquí iría la lógica para enviar los datos (por ahora simplemente mostraremos el mensaje de éxito)
+      setShowSuccessMessage(true);
+      // Resetear los campos del formulario
+      setFormData({
+        nombres: '',
+        apellidos: '',
+        correo: '',
+        telefono: '',
+        genero: 'Femenino',
+        direccion: '',
+        ciudad: 'Santo Domingo',
+        nacionalidad: 'Dominicana',
+        carrera: 'Diseño Gráfico - DG',
+        master: 'Master en UX/UI'
+      });
+      setErrors({});
     } else {
       console.log('Formulario inválido');
     }
@@ -178,6 +202,11 @@ export function AnadirEstudiante() {
           <button type="button" className={styles.cancelar}>Cancelar</button>
           <button type="submit" className={styles.registrar}>Registrar</button>
         </div>
+        {showSuccessMessage && (
+          <div className={styles.notification}>
+            <p>¡Los datos se ingresaron correctamente!</p>
+          </div>
+        )}
       </form>
       <p className={styles.nota}>* estos campos son obligatorios</p>
     </div>

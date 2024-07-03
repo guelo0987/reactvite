@@ -3,6 +3,8 @@ import styles from "../Estilos/EstPaginas/AnadirProfesor.module.css";
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
+const asignaturasDefault = ['Photoshop Básico I', 'Illustrator Básico I'];
+
 export function AnadirProfesor() {
   const [formData, setFormData] = useState({
     nombres: '',
@@ -11,10 +13,11 @@ export function AnadirProfesor() {
     telefono: '',
     genero: '',
     areaAcademica: '',
-    asignaturas: ['']
+    asignaturas: [...asignaturasDefault]
   });
 
   const [errors, setErrors] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +25,6 @@ export function AnadirProfesor() {
       ...prevData,
       [name]: value
     }));
-    // Limpiar el error cuando el usuario empieza a escribir
     if (errors[name]) {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -65,8 +67,23 @@ export function AnadirProfesor() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Formulario enviado:', formData);
-      // Aquí iría la lógica para enviar los datos al servidor
+      setTimeout(() => {
+        console.log('Formulario enviado:', formData);
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
+        setFormData({
+          nombres: '',
+          apellidos: '',
+          correo: '',
+          telefono: '',
+          genero: '',
+          areaAcademica: '',
+          asignaturas: [...asignaturasDefault]
+        });
+        setErrors({});
+      }, 1000);
     } else {
       console.log('Formulario con errores');
     }
@@ -76,8 +93,13 @@ export function AnadirProfesor() {
     <div className={styles["profesor-form-container"]}>
       <Header />
       <Sidebar />
-      <h2 className={styles["profesor-title"]}>Usuarios</h2>
+      <h2 className={styles["profesor-title"]}>Añadir Profesor</h2>
       <form onSubmit={handleSubmit} className={styles["profesor-form"]}>
+        {showSuccessMessage && (
+          <div className={styles["notification"]}>
+            <p>¡El profesor ha sido registrado exitosamente!</p>
+          </div>
+        )}
         <div className={styles["full-width-field"]}>
           <label className={styles["form-label"]}>Nombre completo*</label>
           <div className={styles["name-fields"]}>

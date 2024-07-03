@@ -108,3 +108,12 @@
   margin-top: 5px;
   display: block;
 }
+.notification {
+  background-color: #4CAF50; /* Color de fondo verde */
+  color: white; /* Color del texto */
+  padding: 15px; /* Espaciado interno */
+  margin-bottom: 20px; /* Margen inferior */
+  border-radius: 4px; /* Borde redondeado */
+  font-size: 16px; /* Tamaño de fuente */
+  text-align: center; /* Alineación del texto */
+}
