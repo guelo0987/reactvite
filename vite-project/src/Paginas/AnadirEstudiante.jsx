@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import '../Estilos/EstPaginas/AnadirEstudiante.css';
+import styles from '../Estilos/EstPaginas/AnadirEstudiante.module.css'; // Importamos los estilos CSS Modules
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
-export function AnadirEstudiante ()  {
+export function AnadirEstudiante() {
   const [formData, setFormData] = useState({
     nombres: '',
     apellidos: '',
@@ -42,7 +42,7 @@ export function AnadirEstudiante ()  {
     if (!formData.telefono) newErrors.telefono = 'El teléfono es obligatorio';
     if (!formData.direccion) newErrors.direccion = 'La dirección es obligatoria';
     if (!formData.carrera) newErrors.carrera = 'La carrera es obligatoria';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -58,60 +58,60 @@ export function AnadirEstudiante ()  {
   };
 
   return (
-    <div className="anadir-estudiante">
-        <Header/>
-        <Sidebar/>
-      <h2 className="titulo">Usuarios</h2>
+    <div className={styles["anadir-estudiante"]}>
+      <Header />
+      <Sidebar />
+      <h2 className={styles.titulo}>Usuarios</h2>
       <form onSubmit={handleSubmit}>
-        <div className="campo-completo">
+        <div className={styles["campo-completo"]}>
           <label>Nombre completo*</label>
-          <div className="nombre-completo">
-            <input 
-              type="text" 
-              name="nombres" 
-              placeholder="Nombres" 
-              value={formData.nombres} 
+          <div className={styles["nombre-completo"]}>
+            <input
+              type="text"
+              name="nombres"
+              placeholder="Nombres"
+              value={formData.nombres}
               onChange={handleChange}
-              className={errors.nombres ? 'error' : ''}
+              className={errors.nombres ? styles.error : ''}
             />
-            <input 
-              type="text" 
-              name="apellidos" 
-              placeholder="Apellidos" 
-              value={formData.apellidos} 
+            <input
+              type="text"
+              name="apellidos"
+              placeholder="Apellidos"
+              value={formData.apellidos}
               onChange={handleChange}
-              className={errors.apellidos ? 'error' : ''}
+              className={errors.apellidos ? styles.error : ''}
             />
           </div>
-          {(errors.nombres || errors.apellidos) && <span className="error-message">{errors.nombres || errors.apellidos}</span>}
+          {(errors.nombres || errors.apellidos) && <span className={styles["error-message"]}>{errors.nombres || errors.apellidos}</span>}
         </div>
 
-        <div className="campo-grupo">
-          <div className="campo">
+        <div className={styles["campo-grupo"]}>
+          <div className={styles.campo}>
             <label>Correo electrónico*</label>
-            <input 
-              type="email" 
-              name="correo" 
-              placeholder="correo@universidad.com" 
-              value={formData.correo} 
+            <input
+              type="email"
+              name="correo"
+              placeholder="correo@universidad.com"
+              value={formData.correo}
               onChange={handleChange}
-              className={errors.correo ? 'error' : ''}
+              className={errors.correo ? styles.error : ''}
             />
-            {errors.correo && <span className="error-message">{errors.correo}</span>}
+            {errors.correo && <span className={styles["error-message"]}>{errors.correo}</span>}
           </div>
-          <div className="campo">
+          <div className={styles.campo}>
             <label>Teléfono*</label>
-            <input 
-              type="tel" 
-              name="telefono" 
-              placeholder="***-***-****" 
-              value={formData.telefono} 
+            <input
+              type="tel"
+              name="telefono"
+              placeholder="***-***-****"
+              value={formData.telefono}
               onChange={handleChange}
-              className={errors.telefono ? 'error' : ''}
+              className={errors.telefono ? styles.error : ''}
             />
-            {errors.telefono && <span className="error-message">{errors.telefono}</span>}
+            {errors.telefono && <span className={styles["error-message"]}>{errors.telefono}</span>}
           </div>
-          <div className="campo">
+          <div className={styles.campo}>
             <label>Género*</label>
             <select name="genero" value={formData.genero} onChange={handleChange}>
               <option value="Femenino">Femenino</option>
@@ -121,27 +121,27 @@ export function AnadirEstudiante ()  {
           </div>
         </div>
 
-        <div className="campo-grupo">
-          <div className="campo-largo">
+        <div className={styles["campo-grupo"]}>
+          <div className={styles["campo-largo"]}>
             <label>Dirección*</label>
-            <input 
-              type="text" 
-              name="direccion" 
-              placeholder="Dirección #, Sector" 
-              value={formData.direccion} 
+            <input
+              type="text"
+              name="direccion"
+              placeholder="Dirección #, Sector"
+              value={formData.direccion}
               onChange={handleChange}
-              className={errors.direccion ? 'error' : ''}
+              className={errors.direccion ? styles.error : ''}
             />
-            {errors.direccion && <span className="error-message">{errors.direccion}</span>}
+            {errors.direccion && <span className={styles["error-message"]}>{errors.direccion}</span>}
           </div>
-          <div className="campo">
+          <div className={styles.campo}>
             <label>Ciudad*</label>
             <select name="ciudad" value={formData.ciudad} onChange={handleChange}>
               <option value="Santo Domingo">Santo Domingo</option>
               {/* Agrega más ciudades según sea necesario */}
             </select>
           </div>
-          <div className="campo">
+          <div className={styles.campo}>
             <label>Nacionalidad*</label>
             <select name="nacionalidad" value={formData.nacionalidad} onChange={handleChange}>
               <option value="Dominicana">Dominicana</option>
@@ -150,22 +150,22 @@ export function AnadirEstudiante ()  {
           </div>
         </div>
 
-        <div className="campo-completo">
+        <div className={styles["campo-completo"]}>
           <label>Carrera*</label>
-          <select 
-            name="carrera" 
-            value={formData.carrera} 
+          <select
+            name="carrera"
+            value={formData.carrera}
             onChange={handleChange}
-            className={errors.carrera ? 'error' : ''}
+            className={errors.carrera ? styles.error : ''}
           >
             <option value="">Seleccione una carrera</option>
             <option value="Diseño Gráfico - DG">Diseño Gráfico - DG</option>
             {/* Agrega más carreras según sea necesario */}
           </select>
-          {errors.carrera && <span className="error-message">{errors.carrera}</span>}
+          {errors.carrera && <span className={styles["error-message"]}>{errors.carrera}</span>}
         </div>
 
-        <div className="campo-completo">
+        <div className={styles["campo-completo"]}>
           <label>Master</label>
           <select name="master" value={formData.master} onChange={handleChange}>
             <option value="">Seleccione un master (opcional)</option>
@@ -174,13 +174,12 @@ export function AnadirEstudiante ()  {
           </select>
         </div>
 
-        <div className="botones">
-          <button type="button" className="cancelar">Cancelar</button>
-          <button type="submit" className="registrar">Registrar</button>
+        <div className={styles.botones}>
+          <button type="button" className={styles.cancelar}>Cancelar</button>
+          <button type="submit" className={styles.registrar}>Registrar</button>
         </div>
       </form>
-      <p className="nota">* estos campos son obligatorios</p>
+      <p className={styles.nota}>* estos campos son obligatorios</p>
     </div>
   );
-};
-
+}

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import "../Estilos/EstPaginas/AnadirProfesor.css"
+import styles from "../Estilos/EstPaginas/AnadirProfesor.module.css";
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
-export function AnadirProfesor ()  {
+export function AnadirProfesor() {
   const [formData, setFormData] = useState({
     nombres: '',
     apellidos: '',
@@ -22,6 +22,13 @@ export function AnadirProfesor ()  {
       ...prevData,
       [name]: value
     }));
+    // Limpiar el error cuando el usuario empieza a escribir
+    if (errors[name]) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: null
+      }));
+    }
   };
 
   const handleAsignaturaChange = (index, value) => {
@@ -66,25 +73,24 @@ export function AnadirProfesor ()  {
   };
 
   return (
-    <div className="profesor-form-container">
-        <Header/>
-        <Sidebar/>
-      <h2 className="profesor-title">Usuarios</h2>
-      <form onSubmit={handleSubmit} className="profesor-form">
-        <div className="full-width-field">
-          <label className="form-label">Nombre completo*</label>
-          <div className="name-fields">
+    <div className={styles["profesor-form-container"]}>
+      <Header />
+      <Sidebar />
+      <h2 className={styles["profesor-title"]}>Usuarios</h2>
+      <form onSubmit={handleSubmit} className={styles["profesor-form"]}>
+        <div className={styles["full-width-field"]}>
+          <label className={styles["form-label"]}>Nombre completo*</label>
+          <div className={styles["name-fields"]}>
             <input
-              className="form-input"
+              className={`${styles["form-input"]} ${errors.nombres ? styles.error : ''}`}
               type="text"
               name="nombres"
               placeholder="Nombres"
               value={formData.nombres}
               onChange={handleChange}
-              
             />
             <input
-              className="form-input"
+              className={`${styles["form-input"]} ${errors.apellidos ? styles.error : ''}`}
               type="text"
               name="apellidos"
               placeholder="Apellidos"
@@ -92,81 +98,89 @@ export function AnadirProfesor ()  {
               onChange={handleChange}
             />
           </div>
+          {(errors.nombres || errors.apellidos) && <span className={styles["error-message"]}>{errors.nombres || errors.apellidos}</span>}
         </div>
-        <div className="field-group">
-          <div className="field">
-            <label className="form-label">Correo electrónico*</label>
+        <div className={styles["field-group"]}>
+          <div className={styles["field"]}>
+            <label className={styles["form-label"]}>Correo electrónico*</label>
             <input
-              className="form-input"
+              className={`${styles["form-input"]} ${errors.correo ? styles.error : ''}`}
               type="email"
               name="correo"
               placeholder="correo@universidad.com"
               value={formData.correo}
               onChange={handleChange}
             />
+            {errors.correo && <span className={styles["error-message"]}>{errors.correo}</span>}
           </div>
-          <div className="field">
-            <label className="form-label">Teléfono*</label>
+          <div className={styles["field"]}>
+            <label className={styles["form-label"]}>Teléfono*</label>
             <input
-              className="form-input"
+              className={`${styles["form-input"]} ${errors.telefono ? styles.error : ''}`}
               type="tel"
               name="telefono"
               placeholder="***-***-****"
               value={formData.telefono}
               onChange={handleChange}
             />
+            {errors.telefono && <span className={styles["error-message"]}>{errors.telefono}</span>}
           </div>
-          <div className="field">
-            <label className="form-label">Género*</label>
+          <div className={styles["field"]}>
+            <label className={styles["form-label"]}>Género*</label>
             <select
-              className="form-select"
+              className={`${styles["form-select"]} ${errors.genero ? styles.error : ''}`}
               name="genero"
               value={formData.genero}
               onChange={handleChange}
             >
+              <option value="">Seleccione un género</option>
               <option value="Femenino">Femenino</option>
               <option value="Masculino">Masculino</option>
               <option value="Otro">Otro</option>
             </select>
+            {errors.genero && <span className={styles["error-message"]}>{errors.genero}</span>}
           </div>
         </div>
-        <div className="full-width-field">
-          <label className="form-label">Área académica*</label>
+        <div className={styles["full-width-field"]}>
+          <label className={styles["form-label"]}>Área académica*</label>
           <select
-            className="form-select"
+            className={`${styles["form-select"]} ${errors.areaAcademica ? styles.error : ''}`}
             name="areaAcademica"
             value={formData.areaAcademica}
             onChange={handleChange}
           >
-            <option value="">Área académica</option>
+            <option value="">Seleccione un área académica</option>
             <option value="Diseño">Diseño</option>
             <option value="Programación">Programación</option>
             <option value="Marketing">Marketing</option>
           </select>
+          {errors.areaAcademica && <span className={styles["error-message"]}>{errors.areaAcademica}</span>}
         </div>
-        <div className="full-width-field">
-          <label className="form-label">Asignaturas que impartirá*</label>
+        <div className={styles["full-width-field"]}>
+          <label className={styles["form-label"]}>Asignaturas que impartirá*</label>
           {formData.asignaturas.map((asignatura, index) => (
             <select
               key={index}
-              className="form-select"
+              className={`${styles["form-select"]} ${errors.asignaturas ? styles.error : ''}`}
               value={asignatura}
               onChange={(e) => handleAsignaturaChange(index, e.target.value)}
             >
+              <option value="">Seleccione una asignatura</option>
               <option value="Photoshop Básico I">Photoshop Básico I</option>
               <option value="Illustrator Básico I">Illustrator Básico I</option>
             </select>
           ))}
-          <button type="button" className="add-button" onClick={addAsignatura}>
+          {errors.asignaturas && <span className={styles["error-message"]}>{errors.asignaturas}</span>}
+          <button type="button" className={styles["add-button"]} onClick={addAsignatura}>
             Otra asignatura
           </button>
         </div>
-        <div className="button-group">
-          <button type="button" className="cancel-button">Cancelar</button>
-          <button type="submit" className="submit-button">Registrar</button>
+        <div className={styles["button-group"]}>
+          <button type="button" className={styles["cancel-button"]}>Cancelar</button>
+          <button type="submit" className={styles["submit-button"]}>Registrar</button>
         </div>
       </form>
-      <p className="form-footnote">* estos campos son obligatorios</p>
+      <p className={styles["form-footnote"]}>* estos campos son obligatorios</p>
     </div>
   );
-};
+}

@@ -10,6 +10,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 100000000; /* Asegúrate de que el modal esté en la capa superior */
+
 }
 
 .task-modal {

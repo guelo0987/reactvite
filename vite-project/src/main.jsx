@@ -21,6 +21,7 @@ import { AnadirEstudiante } from './Paginas/AnadirEstudiante.jsx';
 import { AnadirProfesor } from './Paginas/AnadirProfesor.jsx';
 import {Materias} from './Paginas/Materias.jsx';
 import {Aulas} from './Paginas/Aulas.jsx';
+import {Secciones} from './Paginas/Secciones.jsx'
 
 const router = createBrowserRouter([
   {
@@ -140,6 +141,13 @@ const router = createBrowserRouter([
     path:"/aulas",
     element:(<ProtectedRoute>
       <Aulas/>
+    </ProtectedRoute>)
+  }
+  ,
+  {
+    path:"/secciones",
+    element:(<ProtectedRoute>
+      <Secciones/>
     </ProtectedRoute>)
   }
 
