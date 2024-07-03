@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../Estilos/EstPaginas/Secciones.module.css';
+import Header from '../Componentes/Header';
+import Sidebar from '../Componentes/SidebarAdmin';
 
 const materiasPorArea = {
   Humanidades: [
@@ -41,6 +43,8 @@ export function Secciones  ()  {
 
   return (
     <div className={styles.seccionesContainer}>
+      <Header/>
+      <Sidebar/>
       <h1 className={styles.heading}>Secciones</h1>
       <div className={styles.filtros}>
         <div className={styles.filtroGrupo}>

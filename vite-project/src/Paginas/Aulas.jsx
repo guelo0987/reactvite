@@ -47,7 +47,16 @@ export function Aulas() {
   };
 
   const handleAddAula = (newAula) => {
-    setAulas([...aulas, newAula]);
+    // Verificar si ya existe una materia con el mismo horario y aula
+    const conflict = aulas.some(aula => aula.horario === newAula.horario && aula.aula === newAula.aula);
+
+    if (conflict) {
+      alert('No ha sido posible asignar aula, hubo un choque de horario o disponiblidad del aula');
+    } else {
+      setAulas([...aulas, newAula]);
+      alert('Se ha asignado el aula con éxito.');
+    }
+
     handleCloseModal();
   };
 

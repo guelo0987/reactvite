@@ -1,8 +1,10 @@
 .secciones-container {
     font-family: Arial, sans-serif;
     max-width: 1200px;
-    margin: 0 auto;
+    
     padding: 20px;
+    margin-top: 45px;
+    margin-left: 255px ;
   }
   
   h1 {
