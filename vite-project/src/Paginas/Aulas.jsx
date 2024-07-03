@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../Estilos/EstPaginas/Aulas.css';
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
-import AulaModal from '../Componentes/AssignAulaModal'; // Asegúrate de que la ruta sea correcta
+import AulaModal from '../Componentes/AssignAulaModal';
 
 const horariosPorMateria = {
   'Básicos de Photoshop': {
@@ -28,8 +28,8 @@ const horariosPorMateria = {
 };
 
 export function Aulas() {
-  const [edificio, setEdificio] = useState('EL - Electo Lipto');
-  const [tipo, setTipo] = useState('Teoria');
+  const [edificio, setEdificio] = useState('Todas'); // Cambiado a 'Todas'
+  const [tipo, setTipo] = useState('Todas'); // Cambiado a 'Todas'
   const [modalVisible, setModalVisible] = useState(false);
   const [aulas, setAulas] = useState([
     { materia: 'Básicos de Photoshop', edificio: 'EL', seccion: '01', horario: 'Sabado (10:00 AM - 12:00 PM)', aula: '204' },
@@ -51,6 +51,17 @@ export function Aulas() {
     handleCloseModal();
   };
 
+  // Función para filtrar las aulas según los filtros seleccionados
+  const filteredAulas = aulas.filter(aula => {
+    if (edificio !== 'Todas' && aula.edificio !== edificio) {
+      return false;
+    }
+    if (tipo !== 'Todas' && aula.tipo !== tipo) {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <div className="aulasContainer">
       <Header />
@@ -62,13 +73,19 @@ export function Aulas() {
         <div className="filterGroup">
           <label>Edificio</label>
           <select value={edificio} onChange={(e) => setEdificio(e.target.value)}>
-            <option value="EL - Electo Lipto">EL - Electo Lipto</option>
+            <option value="Todas">Todas</option>
+            <option value="EL">EL - Electo Lipto</option>
+            <option value="FD">FD - Facultad de Diseño</option>
+            <option value="GC">GC - Galería Central</option>
+            <option value="AJ">AJ - Arquitectura y Jardines</option>
           </select>
         </div>
         <div className="filterGroup">
           <label>Tipo</label>
           <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-            <option value="Teoria">Teoria</option>
+            <option value="Todas">Todas</option>
+            <option value="Teoria">Teoría</option>
+            <option value="Practica">Práctica</option>
           </select>
         </div>
         <button className="assignButton" onClick={handleOpenModal}>Asignar aula</button>
@@ -85,7 +102,7 @@ export function Aulas() {
             </tr>
           </thead>
           <tbody>
-            {aulas.map((aula, index) => (
+            {filteredAulas.map((aula, index) => (
               <tr key={index}>
                 <td>{aula.materia}</td>
                 <td>{aula.edificio}</td>
