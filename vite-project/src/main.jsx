@@ -19,8 +19,8 @@ import { EstudianteRetirarMaterias } from './Paginas/EstudianteRetirarMaterias.j
 import { ListadoUsuarios } from './Paginas/ListadoUsuarios.jsx';
 import { AnadirEstudiante } from './Paginas/AnadirEstudiante.jsx';
 import { AnadirProfesor } from './Paginas/AnadirProfesor.jsx';
-import {Materias} from './Paginas/Materias.jsx'
-
+import {Materias} from './Paginas/Materias.jsx';
+import {Aulas} from './Paginas/Aulas.jsx';
 
 const router = createBrowserRouter([
   {
@@ -134,6 +134,12 @@ const router = createBrowserRouter([
     path:"/materias",
     element:(<ProtectedRoute>
       <Materias/>
+    </ProtectedRoute>)
+  },
+  {
+    path:"/aulas",
+    element:(<ProtectedRoute>
+      <Aulas/>
     </ProtectedRoute>)
   }
 
