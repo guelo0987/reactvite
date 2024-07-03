@@ -53,4 +53,20 @@
     content: url('ruta/al/icono-usuario.png');
     margin-right: 10px;
   }
+  .btn-filtrar {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 20px;
+    cursor: pointer;
+    border-radius: 60px;
+    font-size: 14px;
+  }
   
+  .btn-filtrar:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-filtrar:focus {
+    outline: none;
+  }
