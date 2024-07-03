@@ -3,6 +3,8 @@ import styles from '../Estilos/EstComponentes/Sidebar.module.css';
 import logoImage from '../assets/logoUni.png';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoutModal from '../Componentes/VentanaLogOut';
+import PreferenciaNotificaciones from "../Componentes/PreferenciaNotificaciones";
+import ConfiguracionCuenta from "../Componentes/ConfiguracionCuenta";
 
 const SidebarItem = ({ icon, text, to, isActive = false, onClick }) => (
   <Link to={to} className={`${styles.sidebarItem} ${isActive ? styles.sidebarItemActive : ''}`} onClick={onClick}>
@@ -13,6 +15,8 @@ const SidebarItem = ({ icon, text, to, isActive = false, onClick }) => (
 
 const Sidebar = () => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isPreferenciaNotificacionesVisible, setPreferenciaNotificacionesVisible] = useState(false); // Define el estado para PreferenciaNotificaciones
+  const [isConfiguracionCuentaVisible, setConfiguracionCuentaVisible] = useState(false); // Define el estado para ConfiguracionCuenta
   const navigate = useNavigate();
 
   const handleLogoutClick = (e) => {
@@ -27,6 +31,22 @@ const Sidebar = () => {
   const handleConfirmLogout = () => {
     setModalVisible(false);
     navigate('/logout');
+  };
+
+  const handleOpenPreferenciaNotificaciones = () => {
+    setPreferenciaNotificacionesVisible(true);
+  };
+
+  const handleClosePreferenciaNotificaciones = () => {
+    setPreferenciaNotificacionesVisible(false);
+  };
+
+  const handleOpenConfiguracionCuenta = () => {
+    setConfiguracionCuentaVisible(true);
+  };
+
+  const handleCloseConfiguracionCuenta = () => {
+    setConfiguracionCuentaVisible(false);
   };
 
   return (
@@ -51,13 +71,15 @@ const Sidebar = () => {
             <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/318b9ece01d5699a4dde5dfb300b6129d17e55cc546ce074a3fd7e5e3eb693d0?apiKey=729dc09cd15c473da7916659c4854519&" text="Hoja de pago" to="/HojaPago" />
             
             <h2 className={`${styles.sidebarSectionTitle} mt-16 max-md:mt-10`}>Configuración</h2>
-            <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/1f232d4efed64b8abc429ee0b51c66cfc3489b87ef2a2ae5d6a225aca07b4f95?apiKey=729dc09cd15c473da7916659c4854519&" text="Configuraciones de la cuenta" to="/configuraciones-cuenta" />
-            <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/b6113ee9ca88d31becd19326d889da793c34d47074112926e65dd031fa456fcb?apiKey=729dc09cd15c473da7916659c4854519&" text="Preferencias de notificaciones" to="/preferencias-notificaciones" />
+            <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/1f232d4efed64b8abc429ee0b51c66cfc3489b87ef2a2ae5d6a225aca07b4f95?apiKey=729dc09cd15c473da7916659c4854519&" text="Configuraciones de la cuenta" to="#" onClick={handleOpenConfiguracionCuenta} />
+            <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/b6113ee9ca88d31becd19326d889da793c34d47074112926e65dd031fa456fcb?apiKey=729dc09cd15c473da7916659c4854519&" text="Preferencias de notificaciones" to="#" onClick={handleOpenPreferenciaNotificaciones} />
             <SidebarItem icon="https://cdn.builder.io/api/v1/image/assets/TEMP/9104e80a1919c81007c1b02275b427525b5332106a38a90b750e326be1ebca67?apiKey=729dc09cd15c473da7916659c4854519&" text="Logout" to="#" onClick={handleLogoutClick} />
           </div>
         </nav>
       </aside>
       <LogoutModal isVisible={isModalVisible} onClose={handleCloseModal} onConfirm={handleConfirmLogout} />
+      {isPreferenciaNotificacionesVisible && <PreferenciaNotificaciones isOpen={isPreferenciaNotificacionesVisible} onClose={handleClosePreferenciaNotificaciones} />}
+      {isConfiguracionCuentaVisible && <ConfiguracionCuenta isOpen={isConfiguracionCuentaVisible} onClose={handleCloseConfiguracionCuenta} />}
     </>
   );
 };

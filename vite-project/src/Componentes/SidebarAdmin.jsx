@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import LogoutModal from '../Componentes/VentanaLogOut';
 import OpcionUsuario from "../Componentes/OpcionUsuario";
 import CrearUsuarioModal from "../Componentes/CrearUsuario";
+import PreferenciaNotificaciones from "../Componentes/PreferenciaNotificaciones";
+import ConfiguracionCuenta from "../Componentes/ConfiguracionCuenta";
 
 const SidebarItem = ({ icon, text, to, isActive = false, onClick }) => (
   <Link to={to} className={`${styles.sidebarItem} ${isActive ? styles.sidebarItemActive : ''}`} onClick={onClick}>
@@ -18,6 +20,8 @@ const Sidebar = () => {
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isOpcionUsuarioModalVisible, setOpcionUsuarioModalVisible] = useState(false);
   const [isCrearUsuarioModalVisible, setCrearUsuarioModalVisible] = useState(false);
+  const [isPreferenciaNotificacionesVisible, setPreferenciaNotificacionesVisible] = useState(false);
+  const [isConfiguracionCuentaVisible, setConfiguracionCuentaVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleOpenLogoutModal = () => {
@@ -49,6 +53,22 @@ const Sidebar = () => {
     setCrearUsuarioModalVisible(false);
   };
 
+  const handleOpenPreferenciaNotificaciones = () => {
+    setPreferenciaNotificacionesVisible(true);
+  };
+
+  const handleClosePreferenciaNotificaciones = () => {
+    setPreferenciaNotificacionesVisible(false);
+  };
+
+  const handleOpenConfiguracionCuenta = () => {
+    setConfiguracionCuentaVisible(true);
+  };
+
+  const handleCloseConfiguracionCuenta = () => {
+    setConfiguracionCuentaVisible(false);
+  };
+
   const sidebarItems = [
     { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d705e2e96688f89670a564256ed99bb6ddb16d1afba99fa7e635e38d8b91819b?apiKey=729dc09cd15c473da7916659c4854519&", text: "Usuarios", to: "#", onClick: handleOpenOpcionUsuarioModal },
     { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/f0324d01f8677df18c7ac2ee1f4378e9edfab3672350ddcef5bb0cf161d5c053?apiKey=729dc09cd15c473da7916659c4854519&", text: "Materias", to: "/materias" },
@@ -57,8 +77,8 @@ const Sidebar = () => {
   ];
 
   const configItems = [
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/ee91485ea8d501d78cc6ed14461c7b2f646e5a30d6ad54f438de519ffc7ca9c0?apiKey=729dc09cd15c473da7916659c4854519&", text: "Configuraciones de la cuenta", to: "/configuracion-cuenta" },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/1e95206ad721e91628e23121cc7f244991dadefeaf6d2fd4211338cb865df7ff?apiKey=729dc09cd15c473da7916659c4854519&", text: "Preferencias de notificaciones", to: "/preferencias-notificaciones" },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/ee91485ea8d501d78cc6ed14461c7b2f646e5a30d6ad54f438de519ffc7ca9c0?apiKey=729dc09cd15c473da7916659c4854519&", text: "Configuraciones de la cuenta", to: "#", onClick: handleOpenConfiguracionCuenta },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/1e95206ad721e91628e23121cc7f244991dadefeaf6d2fd4211338cb865df7ff?apiKey=729dc09cd15c473da7916659c4854519&", text: "Preferencias de notificaciones", to: "#", onClick: handleOpenPreferenciaNotificaciones },
     { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/fe043f0e7aaab8d1092d08b27f81f2a59e8d5a4b4f09b0e669a661c365311721?apiKey=729dc09cd15c473da7916659c4854519&", text: "Logout", to: "#", onClick: handleOpenLogoutModal },
   ];
 
@@ -85,6 +105,8 @@ const Sidebar = () => {
       <LogoutModal isVisible={isLogoutModalVisible} onClose={handleCloseLogoutModal} onConfirm={handleConfirmLogout} />
       {isOpcionUsuarioModalVisible && <OpcionUsuario onClose={handleCloseOpcionUsuarioModal} onCrearUsuario={handleOpenCrearUsuarioModal} />}
       {isCrearUsuarioModalVisible && <CrearUsuarioModal onClose={handleCloseCrearUsuarioModal} />}
+      <PreferenciaNotificaciones isOpen={isPreferenciaNotificacionesVisible} onClose={handleClosePreferenciaNotificaciones} />
+      <ConfiguracionCuenta isOpen={isConfiguracionCuentaVisible} onClose={handleCloseConfiguracionCuenta} />
     </>
   );
 };
