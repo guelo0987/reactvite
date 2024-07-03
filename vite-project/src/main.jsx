@@ -16,6 +16,12 @@ import ProtectedRoute from './Componentes/RutaProtegida.jsx';
 import { AdminDashboard } from './Paginas/AdminDashboard.jsx';
 import { EstudianteAgregarMaterias } from './Paginas/EstudianteAgregarMaterias.jsx';
 import { EstudianteRetirarMaterias } from './Paginas/EstudianteRetirarMaterias.jsx';
+import { ListadoUsuarios } from './Paginas/ListadoUsuarios.jsx';
+import { AnadirEstudiante } from './Paginas/AnadirEstudiante.jsx';
+import { AnadirProfesor } from './Paginas/AnadirProfesor.jsx';
+import {Materias} from './Paginas/Materias.jsx'
+
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -102,6 +108,34 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     )
   },
+  {
+    path:"/ListadoUsuarios",
+    element:(<ProtectedRoute>
+      <ListadoUsuarios/>
+    </ProtectedRoute>)
+  },
+  {
+    path:"/AñadirEstudiante",
+    element:(
+      <ProtectedRoute>
+        <AnadirEstudiante/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path:"/AñadirProfesor",
+    element:(
+      <ProtectedRoute>
+        <AnadirProfesor/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path:"/materias",
+    element:(<ProtectedRoute>
+      <Materias/>
+    </ProtectedRoute>)
+  }
 
 ]);
 
