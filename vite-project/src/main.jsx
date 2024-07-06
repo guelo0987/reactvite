@@ -1,4 +1,3 @@
-// main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { PensumCarrera } from './Paginas/PensumCarrera.jsx';
 import { HojaPago } from './Paginas/HojaPago.jsx';
 import { CuentaPorPagar } from './Paginas/CuentaPorPagar.jsx';
 import { Horario } from './Paginas/Horario.jsx';
-import { AutenticacionUsuario } from './Componentes/AutenticacionUsuario.jsx';
+import { AuthProvider } from './Componentes/AutenticacionUsuario.jsx';
 import { ReporteCalificaciones } from './Paginas/ReporteCalificaciones.jsx';
 import ProtectedRoute from './Componentes/RutaProtegida.jsx';
 import { AdminDashboard } from './Paginas/AdminDashboard.jsx';
@@ -19,9 +18,9 @@ import { EstudianteRetirarMaterias } from './Paginas/EstudianteRetirarMaterias.j
 import { ListadoUsuarios } from './Paginas/ListadoUsuarios.jsx';
 import { AnadirEstudiante } from './Paginas/AnadirEstudiante.jsx';
 import { AnadirProfesor } from './Paginas/AnadirProfesor.jsx';
-import {Materias} from './Paginas/Materias.jsx';
-import {Aulas} from './Paginas/Aulas.jsx';
-import {Secciones} from './Paginas/Secciones.jsx'
+import { Materias } from './Paginas/Materias.jsx';
+import { Aulas } from './Paginas/Aulas.jsx';
+import { Secciones } from './Paginas/Secciones.jsx';
 
 const router = createBrowserRouter([
   {
@@ -68,7 +67,6 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  
   {
     path: '/horario',
     element: (
@@ -142,19 +140,17 @@ const router = createBrowserRouter([
     element:(<ProtectedRoute>
       <Aulas/>
     </ProtectedRoute>)
-  }
-  ,
+  },
   {
     path:"/secciones",
     element:(<ProtectedRoute>
       <Secciones/>
     </ProtectedRoute>)
   }
-
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <AutenticacionUsuario>
+  <AuthProvider>
     <RouterProvider router={router} />
-  </AutenticacionUsuario>
+  </AuthProvider>
 );

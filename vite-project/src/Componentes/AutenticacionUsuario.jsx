@@ -1,28 +1,41 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
-export function AutenticacionUsuario({ children }) {
-  const [user, setUser] = useState(() => {
-    // Intenta obtener el usuario del localStorage al iniciar
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
 
-  useEffect(() => {
-    // Guarda el usuario en localStorage cada vez que cambie
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+
+  const login = async (username, password) => {
+    try {
+      const response = await axios.post('http://localhost:5104/api/Auth/Login', {
+        Id: username,
+        Password: password,
+      });
+
+      if (response.status === 200) {
+        const { token, user, role } = response.data;
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('role', role);
+        setUser({ ...user, role });
+      } else {
+        throw new Error('Credenciales inválidas');
+      }
+    } catch (error) {
+      console.error('Error en la autenticación', error);
+      throw error;
     }
-  }, [user]);
-
-  const login = (userData) => {
-    setUser(userData);
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('role');
     setUser(null);
   };
 
@@ -31,8 +44,4 @@ export function AutenticacionUsuario({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
-}
+};

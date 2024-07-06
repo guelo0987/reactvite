@@ -14,7 +14,7 @@ export function Login() {
 
   useEffect(() => {
     if (user) {
-      if (user.role === 'admin') {
+      if (user.role === 'Admin') {
         navigate('/AdminDashboard');
       } else {
         navigate('/Menu');
@@ -22,22 +22,15 @@ export function Login() {
     }
   }, [user, navigate]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(false); // Reset error state before attempting login
     
-    if (username === 'usuario' && password === '123456') {
-      setError(false);
-      login({ username, role: 'user' });
-      console.log('Login exitoso como usuario estándar! Redirigiendo...');
-      navigate('/Menu');
-    } else if (username === 'admin' && password === 'admin123') {
-      setError(false);
-      login({ username, role: 'admin' });
-      console.log('Login exitoso como administrador! Redirigiendo...');
-      navigate('/AdminDashboard');
-    } else {
+    try {
+      await login(username, password);
+    } catch (error) {
       setError(true);
-      console.log('Credenciales incorrectas');
+      console.error('Login error:', error);
     }
   };
 
@@ -75,7 +68,7 @@ export function Login() {
             </div>
             {error && <p className={styles["error-message"]}>Credenciales incorrectas. Inténtalo de nuevo.</p>}
             <div className={styles["forgot-password"]}>
-              <a href="#">Olvido Contraseña?</a>
+              <a href="#">Olvidó Contraseña?</a>
             </div>
             <button type="submit" className={styles["login-button"]}>Log In</button>
           </form>
