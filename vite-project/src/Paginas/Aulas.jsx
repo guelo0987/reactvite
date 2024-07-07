@@ -1,75 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../Estilos/EstPaginas/Aulas.css';
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
-import AulaModal from '../Componentes/AssignAulaModal';
-
-const horariosPorMateria = {
-  'Básicos de Photoshop': {
-    '01': 'Sabado (10:00 AM - 12:00 PM)',
-    '02': 'Domingo (10:00 AM - 12:00 PM)'
-  },
-  'Algebra II': {
-    '01': 'Lunes (2:00 PM - 4:00 PM)',
-    '02': 'Martes (2:00 PM - 4:00 PM)'
-  },
-  'UX/UI Design 2': {
-    '01': 'Martes (3:00 PM - 7:00 PM)',
-    '02': 'Miércoles (3:00 PM - 7:00 PM)'
-  },
-  'Semiótica y Diseño': {
-    '01': 'Miercoles (12:00 PM - 2PM)',
-    '02': 'Jueves (12:00 PM - 2PM)'
-  },
-  'Branding I': {
-    '01': 'Viernes (10:00 AM - 12:00 PM)',
-    '02': 'Viernes (2:00 PM - 4:00 PM)'
-  }
-};
 
 export function Aulas() {
-  const [edificio, setEdificio] = useState('Todas'); // Cambiado a 'Todas'
-  const [tipo, setTipo] = useState('Todas'); // Cambiado a 'Todas'
-  const [modalVisible, setModalVisible] = useState(false);
-  const [aulas, setAulas] = useState([
-    { materia: 'Básicos de Photoshop', edificio: 'EL', seccion: '01', horario: 'Sabado (10:00 AM - 12:00 PM)', aula: '204' },
-    { materia: 'Algebra II', edificio: 'FD', seccion: '02', horario: 'Lunes (2:00 PM - 4:00 PM)', aula: '305' },
-    { materia: 'UX/UI Design 2', edificio: 'GC', seccion: '03', horario: 'Martes (3:00 PM - 7:00 PM)', aula: '210' },
-    { materia: 'Semiótica y Diseño', edificio: 'AJ', seccion: '04', horario: 'Miercoles (12:00 PM - 2PM)', aula: '405' },
-  ]);
-
-  const handleOpenModal = () => {
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
-
-  const handleAddAula = (newAula) => {
-    // Verificar si ya existe una materia con el mismo horario y aula
-    const conflict = aulas.some(aula => aula.horario === newAula.horario && aula.aula === newAula.aula);
-
-    if (conflict) {
-      alert('No ha sido posible asignar aula, hubo un choque de horario o disponiblidad del aula');
-    } else {
-      setAulas([...aulas, newAula]);
-      alert('Se ha asignado el aula con éxito.');
-    }
-
-    handleCloseModal();
-  };
-
-  // Función para filtrar las aulas según los filtros seleccionados
-  const filteredAulas = aulas.filter(aula => {
-    if (edificio !== 'Todas' && aula.edificio !== edificio) {
-      return false;
-    }
-    if (tipo !== 'Todas' && aula.tipo !== tipo) {
-      return false;
-    }
-    return true;
+  const [aulas, setAulas] = useState([]);
+  const [nuevaAula, setNuevaAula] = useState({
+    codigoAula: '',
+    capacidad: '',
+    tipoAula: '',
+    edificio: ''
   });
+  const [filtroEdificio, setFiltroEdificio] = useState('Todos');
+  const [filtroTipo, setFiltroTipo] = useState('Todos');
+
+  useEffect(() => {
+    cargarAulas();
+  }, []);
+
+  const cargarAulas = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No se encontró el token de autorización');
+        // Aquí podrías redirigir al usuario a la página de login
+        return;
+      }
+
+      const response = await axios.get('http://localhost:5104/api/AulaApi', {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      setAulas(response.data);
+    } catch (error) {
+      console.error('Error al cargar las aulas:', error);
+      if (error.response && error.response.status === 401) {
+        console.error('Token no válido o expirado');
+        // Aquí podrías manejar la renovación del token o redirigir al login
+      }
+      // Mostrar un mensaje de error al usuario
+      alert('Error al cargar las aulas. Por favor, intente de nuevo más tarde.');
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNuevaAula({ ...nuevaAula, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5104/api/AulaApi/CreateAula', nuevaAula, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      setNuevaAula({ codigoAula: '', capacidad: '', tipoAula: '', edificio: '' });
+      cargarAulas(); // Recargar las aulas después de crear una nueva
+      alert('Aula creada con éxito');
+    } catch (error) {
+      console.error('Error al crear el aula:', error);
+      alert('Error al crear el aula. Por favor, intente de nuevo.');
+    }
+  };
+
+  const aulasFiltradas = aulas.filter(aula => 
+    (filtroEdificio === 'Todos' || aula.edificio === filtroEdificio) &&
+    (filtroTipo === 'Todos' || aula.tipoAula === filtroTipo)
+  );
 
   return (
     <div className="aulasContainer">
@@ -78,59 +82,90 @@ export function Aulas() {
       <h2 className="aulasTitle">
         <span className="aulasIcon">&#9783;</span> Aulas
       </h2>
+
+      <form onSubmit={handleSubmit} className="aulaForm">
+        <input
+          type="text"
+          name="codigoAula"
+          value={nuevaAula.codigoAula}
+          onChange={handleInputChange}
+          placeholder="Código del Aula (ej. GC301)"
+          pattern="^[A-Z]{2}\d{3}$"
+          required
+        />
+        <input
+          type="number"
+          name="capacidad"
+          value={nuevaAula.capacidad}
+          onChange={handleInputChange}
+          placeholder="Capacidad"
+        />
+        <input
+          type="text"
+          name="tipoAula"
+          value={nuevaAula.tipoAula}
+          onChange={handleInputChange}
+          placeholder="Tipo de Aula"
+          maxLength="6"
+        />
+        <select
+          name="edificio"
+          value={nuevaAula.edificio}
+          onChange={handleInputChange}
+          required
+        >
+          <option value="">Seleccione un edificio</option>
+          <option value="AJ">AJ - Arquitectura y Jardines</option>
+          <option value="BZ">BZ</option>
+          <option value="GC">GC - Galería Central</option>
+          <option value="FD">FD - Facultad de Diseño</option>
+        </select>
+        <button type="submit">Crear Aula</button>
+      </form>
+
       <div className="filters">
         <div className="filterGroup">
           <label>Edificio</label>
-          <select value={edificio} onChange={(e) => setEdificio(e.target.value)}>
-            <option value="Todas">Todas</option>
-            <option value="EL">EL - Electo Lipto</option>
-            <option value="FD">FD - Facultad de Diseño</option>
-            <option value="GC">GC - Galería Central</option>
+          <select value={filtroEdificio} onChange={(e) => setFiltroEdificio(e.target.value)}>
+            <option value="Todos">Todos</option>
             <option value="AJ">AJ - Arquitectura y Jardines</option>
+            <option value="BZ">BZ</option>
+            <option value="GC">GC - Galería Central</option>
+            <option value="FD">FD - Facultad de Diseño</option>
           </select>
         </div>
         <div className="filterGroup">
           <label>Tipo</label>
-          <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-            <option value="Todas">Todas</option>
-            <option value="Teoria">Teoría</option>
-            <option value="Practica">Práctica</option>
+          <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+            <option value="Todos">Todos</option>
+            <option value="Teoría">Teoría</option>
+            <option value="Práctica">Práctica</option>
           </select>
         </div>
-        <button className="assignButton" onClick={handleOpenModal}>Asignar aula</button>
       </div>
+
       <div className="tableContainer">
         <table className="aulasTable">
           <thead>
             <tr>
-              <th>Materias</th>
+              <th>Código Aula</th>
+              <th>Capacidad</th>
+              <th>Tipo de Aula</th>
               <th>Edificio</th>
-              <th>Sección</th>
-              <th>Horario</th>
-              <th>Aula</th>
             </tr>
           </thead>
           <tbody>
-            {filteredAulas.map((aula, index) => (
-              <tr key={index}>
-                <td>{aula.materia}</td>
+            {aulasFiltradas.map((aula) => (
+              <tr key={aula.codigoAula}>
+                <td>{aula.codigoAula}</td>
+                <td>{aula.capacidad}</td>
+                <td>{aula.tipoAula}</td>
                 <td>{aula.edificio}</td>
-                <td>{aula.seccion}</td>
-                <td>{aula.horario}</td>
-                <td>{aula.aula}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {modalVisible && (
-        <AulaModal
-          isOpen={modalVisible}
-          onClose={handleCloseModal}
-          onAssign={handleAddAula}
-          horariosPorMateria={horariosPorMateria}
-        />
-      )}
     </div>
   );
 }
