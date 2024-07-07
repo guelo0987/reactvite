@@ -1,79 +1,116 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from '../Estilos/EstPaginas/EstudianteAgregarRetirar.module.css';
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/Sidebar2';
+import { useAuth } from "../Componentes/AutenticacionUsuario.jsx";
 
 export function EstudianteAgregarMaterias() {
-  const [area, setArea] = useState('Humanidades');
+  const [materias, setMaterias] = useState([]);
+  const [filteredMaterias, setFilteredMaterias] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [materias, setMaterias] = useState([
-    { id: 1, nombre: 'Filosofía', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 2, nombre: 'Literatura', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 3, nombre: 'Historia', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 4, nombre: 'Arte', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 5, nombre: 'Ética', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 6, nombre: 'Sociología', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 7, nombre: 'Psicología', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-    { id: 8, nombre: 'Antropología', creditos: 20, seccion: 20, profesor: 20, horario: 20, seleccionada: false },
-  ]);
-  const [filteredMaterias, setFilteredMaterias] = useState(materias);
   const [message, setMessage] = useState('');
+  const { user } = useAuth();
+
+  const formatearHorario = (horario) => {
+    if (!horario) return 'No disponible';
+
+    // Si el horario ya es una cadena formateada, la devolvemos tal cual
+    if (typeof horario === 'string' && !horario.startsWith('[')) {
+      return horario;
+    }
+
+    let horarioParsed;
+    try {
+      horarioParsed = typeof horario === 'string' ? JSON.parse(horario) : horario;
+    } catch (error) {
+      console.error('Error al parsear el horario:', error);
+      // Si no se puede parsear como JSON, devolvemos la cadena original
+      return horario;
+    }
+
+    if (!Array.isArray(horarioParsed) || horarioParsed.length === 0) {
+      return 'No disponible';
+    }
+
+    return horarioParsed.map(h => `${h.dia} ${h.horaInicio} - ${h.horaFin}`).join(', ');
+  };
+
+  useEffect(() => {
+    fetchMaterias();
+  }, []);
 
   useEffect(() => {
     const filtered = materias.filter(materia =>
-      materia.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+      materia.materias?.nombreMateria?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      materia.seccions?.codigoSeccion?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredMaterias(filtered);
   }, [searchTerm, materias]);
 
+  const fetchMaterias = async () => {
+    try {
+      const response = await axios.get('http://localhost:5104/api/MateriaDocenteApi');
+      console.log('Datos recibidos de la API:', response.data);
+      setMaterias(response.data);
+      setFilteredMaterias(response.data);
+    } catch (error) {
+      console.error('Error al obtener las materias:', error);
+      setMessage('Error al cargar las materias. Por favor, intente más tarde.');
+    }
+  };
+
   const handleCheckboxChange = (id) => {
     setMaterias(materias.map(materia =>
-      materia.id === id ? { ...materia, seleccionada: !materia.seleccionada } : materia
+      materia.seccionId === id ? { ...materia, seleccionada: !materia.seleccionada } : materia
     ));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const selectedMaterias = materias.filter(m => m.seleccionada);
     if (selectedMaterias.length > 0) {
-      setMessage('Materias agregadas exitosamente');
-      setTimeout(() => setMessage(''), 3000);
-      
-      // Actualizar el estado de las materias para marcarlas como agregadas
-      setMaterias(materias.map(materia =>
-        materia.seleccionada ? { ...materia, agregada: true } : materia
-      ));
+      try {
+        for (const materia of selectedMaterias) {
+          const estudianteId = user.id; // Asegúrate de que user.id sea el ID del estudiante
+          const seccionId = materia.seccionId;
+
+          console.log('Datos a enviar:', { estudianteId, seccionId });
+          
+          const response = await axios.post(`http://localhost:5104/api/EstudianteMateriaApi/SelectSeccion?estudianteId=${estudianteId}&seccionId=${seccionId}`);
+          
+          console.log('Respuesta del servidor:', response.data);
+        }
+        setMessage('Materias seleccionadas exitosamente');
+        fetchMaterias(); // Recargar las materias después de agregar
+      } catch (error) {
+        console.error('Error al seleccionar materias:', error);
+        if (error.response) {
+          console.error('Datos de la respuesta de error:', error.response.data);
+          console.error('Estado de la respuesta de error:', error.response.status);
+          setMessage(`Error al seleccionar materias: ${error.response.data.message || error.message}`);
+        } else {
+          setMessage('Error al seleccionar materias. Por favor, intente nuevamente.');
+        }
+      }
     } else {
       setMessage('Por favor, selecciona al menos una materia');
-      setTimeout(() => setMessage(''), 3000);
     }
+    setTimeout(() => setMessage(''), 3000);
   };
 
   return (
     <div className={styles.agregarMaterias}>
-        <Header/>
-        <Sidebar/>
+      <Header/>
+      <Sidebar/>
       <h1 className={styles.title}>
         <span className={styles.icon}>📚</span>
         Agregar Materias
       </h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.filters}>
-          <div className={styles.selectWrapper}>
-            <label htmlFor="area">Área:</label>
-            <select
-              id="area"
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              className={styles.select}
-            >
-              <option value="Humanidades">Humanidades</option>
-              <option value="Ciencias">Ciencias</option>
-              <option value="Ingeniería">Ingeniería</option>
-            </select>
-          </div>
           <div className={styles.searchWrapper}>
-            <label htmlFor="materia">Materia:</label>
+            <label htmlFor="materia">Buscar Materia:</label>
             <input
               type="text"
               id="materia"
@@ -92,28 +129,30 @@ export function EstudianteAgregarMaterias() {
           <thead>
             <tr>
               <th></th>
-              <th>Materias</th>
-              <th>Créditos</th>
+              <th>Materia</th>
               <th>Sección</th>
               <th>Profesor</th>
+              <th>Aula</th>
               <th>Horario</th>
+              <th>Cupo</th>
             </tr>
           </thead>
           <tbody>
             {filteredMaterias.map((materia) => (
-              <tr key={materia.id} className={materia.agregada ? styles.agregada : ''}>
+              <tr key={materia.seccionId}>
                 <td>
                   <input
                     type="checkbox"
-                    checked={materia.seleccionada}
-                    onChange={() => handleCheckboxChange(materia.id)}
+                    checked={materia.seleccionada || false}
+                    onChange={() => handleCheckboxChange(materia.seccionId)}
                   />
                 </td>
-                <td>{materia.nombre}</td>
-                <td>{materia.creditos}</td>
-                <td>{materia.seccion}</td>
-                <td>{materia.profesor}</td>
-                <td>{materia.horario}</td>
+                <td>{materia.materias?.nombreMateria || 'No disponible'}</td>
+                <td>{materia.seccions?.codigoSeccion}</td>
+                <td>{materia.docentes?.nombreDocente || 'No asignado'}</td>
+                <td>{materia.seccions?.codigoAula}</td>
+                <td>{formatearHorario(materia.seccions?.horario)}</td>
+                <td>{materia.seccions?.cupo}</td>
               </tr>
             ))}
           </tbody>
