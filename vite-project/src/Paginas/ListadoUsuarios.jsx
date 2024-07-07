@@ -1,37 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
 import "../Estilos/EstPaginas/ListaUsuarios.css"
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
-export function ListadoUsuarios  () {
-  const [carrera, setCarrera] = useState(''); // Estado para la carrera (motor de búsqueda)
-  const [tipo, setTipo] = useState(''); // Estado para el tipo de usuario (filtro)
-  
-  const usuarios = [
-    { nombre: 'Alejandro Muñoz', carrera: 'DG', fechaIngreso: '1 Mayo 2022', estado: 'Rojo', tipo: 'Estudiante' },
-    { nombre: 'Merna Rodriguez', carrera: 'DG', fechaIngreso: '1 Mayo 2022', estado: 'Normal', tipo: 'Estudiante' },
-    { nombre: 'Carlos Mendez', carrera: 'DG', fechaIngreso: '2 Febrero 2022', estado: 'Normal', tipo: 'Estudiante' },
-    { nombre: 'Maria Kenich', carrera: 'DG', fechaIngreso: '1 Noviembre 2022', estado: 'Especial', tipo: 'Estudiante' },
-    { nombre: 'Profesor Juan Pérez', carrera: 'DG', fechaIngreso: '15 Enero 2020', estado: 'Activo', tipo: 'Profesor' },
-    { nombre: 'Profesora Ana Gómez', carrera: 'DG', fechaIngreso: '10 Marzo 2018', estado: 'Activo', tipo: 'Profesor' },
-    { nombre: 'Juan Perez', carrera: 'SI', fechaIngreso: '1 Enero 2022', estado: 'Normal', tipo: 'Estudiante' },
-    { nombre: 'Pedro López', carrera: 'SI', fechaIngreso: '1 Marzo 2022', estado: 'Rojo', tipo: 'Estudiante' },
-    { nombre: 'Ana Ruiz', carrera: 'TI', fechaIngreso: '1 Junio 2022', estado: 'Normal', tipo: 'Estudiante' },
-    { nombre: 'Sofía Gómez', carrera: 'TI', fechaIngreso: '1 Abril 2022', estado: 'Normal', tipo: 'Estudiante' },
-    { nombre: 'Luisa Martínez', carrera: 'TI', fechaIngreso: '1 Diciembre 2022', estado: 'Especial', tipo: 'Estudiante' },
-    { nombre: 'Roberto Sanchez', carrera: 'TI', fechaIngreso: '1 Agosto 2022', estado: 'Normal', tipo: 'Estudiante' },
-    { nombre: 'Marcos Rivera', carrera: 'TI', fechaIngreso: '1 Septiembre 2022', estado: 'Rojo', tipo: 'Estudiante' },
-  ];
+export function ListadoUsuarios() {
+  const [carrera, setCarrera] = useState('');
+  const [tipo, setTipo] = useState('');
+  const [usuarios, setUsuarios] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setError('Token no encontrado. Por favor, inicie sesión.');
+          return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+        if (userRole !== 'Admin') {
+          setError('No tiene permiso para acceder a estos recursos.');
+          return;
+        }
+
+        const config = {
+          headers: { Authorization: `Bearer ${token}` }
+        };
+
+        const estudiantesResponse = await axios.get('http://localhost:5104/api/Estudiante', config);
+        const docentesResponse = await axios.get('http://localhost:5104/api/DocenteApi', config);
+
+        const estudiantes = estudiantesResponse.data.map(est => ({
+          id: est.id,
+          nombre: est.nombreEstudiante,
+          carrera: est.carreras ? est.carreras.nombreCarrera : 'N/A',
+          fechaIngreso: est.fechaIngreso,
+          tipo: 'Estudiante'
+        }));
+
+        const docentes = docentesResponse.data.map(doc => ({
+          id: doc.codigoDocente,
+          nombre: doc.nombreDocente,
+          carrera: "N/A", // Si los docentes no tienen carrera asignada
+          fechaIngreso: "N/A", // Si los docentes no tienen fecha de ingreso
+          tipo: 'Profesor'
+        }));
+
+        setUsuarios([...estudiantes, ...docentes]);
+      } catch (error) {
+        setError('Error al cargar los usuarios. Por favor, intente nuevamente.');
+      }
+    };
+
+    fetchUsuarios();
+  }, []);
 
   const handleResetFilters = () => {
     setCarrera('');
     setTipo('');
   };
 
+  const filteredUsuarios = usuarios.filter(usuario => (
+    (carrera === '' || usuario.carrera.toLowerCase().includes(carrera.toLowerCase())) &&
+    (tipo === '' || usuario.tipo === tipo)
+  ));
+
   return (
     <div className="listado-usuarios">
-      <Header/>
-      <Sidebar/>
+      <Header />
+      <Sidebar />
       <h1>Usuarios</h1>
       <div className="filtros">
         <div className="filtro">
@@ -58,36 +101,30 @@ export function ListadoUsuarios  () {
         </div>
         <button className="btn-filtrar" onClick={handleResetFilters}>Limpiar</button>
       </div>
+      {error && <div className="error-message">{error}</div>}
       <table>
         <thead>
           <tr>
             <th>Usuarios</th>
             <th>Carrera</th>
             <th>Fecha de Ingreso</th>
-            <th>Estado</th>
             <th>Tipo</th>
           </tr>
         </thead>
         <tbody>
-          {usuarios
-            .filter(usuario => (
-              (carrera === '' || usuario.carrera.toLowerCase().includes(carrera.toLowerCase())) &&
-              (tipo === '' || usuario.tipo === tipo)
-            ))
-            .map((usuario, index) => (
-              <tr key={index}>
-                <td>
-                  <i className="icono-usuario"></i>
-                  {usuario.nombre}
-                </td>
-                <td>{usuario.carrera}</td>
-                <td>{usuario.fechaIngreso}</td>
-                <td>{usuario.estado}</td>
-                <td>{usuario.tipo}</td>
-              </tr>
-            ))}
+          {filteredUsuarios.map((usuario, index) => (
+            <tr key={index}>
+              <td>
+                <i className="icono-usuario"></i>
+                {usuario.nombre}
+              </td>
+              <td>{usuario.carrera}</td>
+              <td>{usuario.fechaIngreso}</td>
+              <td>{usuario.tipo}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
   );
-};
+}

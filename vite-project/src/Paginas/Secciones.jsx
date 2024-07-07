@@ -1,44 +1,63 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from '../Estilos/EstPaginas/Secciones.module.css';
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
-const materiasPorArea = {
-  Humanidades: [
-    { id: 1, nombre: 'Algebra I' },
-    { id: 2, nombre: 'Algebra II' },
-    { id: 3, nombre: 'Marketing Digital' },
-    { id: 4, nombre: 'Ciudadanía y Ética' },
-    { id: 5, nombre: 'XXXXXX' },
-    { id: 6, nombre: 'XXXXX' },
-  ]
-};
-
-const datosMaterias = [
-  { id: 1, nombre: 'Algebra I', seccion: '01', horario: 'Lunes (8:00 AM - 10:00 AM)', profesor: 'XXXX', cupo: 35 },
-  { id: 2, nombre: 'XXXXXX', seccion: '02', horario: 'Miercoles (12:00 PM - 2PM)', profesor: 'XXXX', cupo: 20 },
-  { id: 3, nombre: 'Algebra II', seccion: '02', horario: 'Lunes (2:00 PM - 4:00 PM)', profesor: 'XXXX', cupo: 40 },
-  { id: 4, nombre: 'Marketing Digital', seccion: '01', horario: 'Martes, Jueves (8:00 PM -10:00 PM)', profesor: 'XXXX', cupo: 25 },
-  { id: 5, nombre: 'XXXXX', seccion: '03', horario: 'Sabado (10:00 AM - 12:00 PM)', profesor: 'XXXX', cupo: 25 },
-  { id: 6, nombre: 'Ciudadanía y Ética', seccion: '01', horario: 'Viernes (4:00 PM - 6:00 PM)', profesor: 'XXXX', cupo: 36 },
-  { id: 7, nombre: 'XXXXXX', seccion: '02', horario: 'Martes (3:00 PM - 7:00 PM)', profesor: 'XXXX', cupo: 25 },
-];
-
-export function Secciones  ()  {
-  const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
-  const [areaSeleccionada, setAreaSeleccionada] = useState('Humanidades');
+export function Secciones() {
+  const [secciones, setSecciones] = useState([]);
   const [materiasFiltradas, setMateriasFiltradas] = useState([]);
+  const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
+  const [aulaSeleccionada, setAulaSeleccionada] = useState('');
+  const [aulas, setAulas] = useState([]);
 
   useEffect(() => {
-    filtrarMaterias();
-  }, [materiaSeleccionada, areaSeleccionada]);
+    obtenerSecciones();
+    obtenerAulas();
+  }, []);
 
-  const filtrarMaterias = () => {
-    let materiasFiltradas = datosMaterias;
-    if (materiaSeleccionada) {
-      materiasFiltradas = materiasFiltradas.filter(materia => materia.nombre === materiaSeleccionada);
+  const obtenerSecciones = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5104/api/SeccionApi', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setSecciones(response.data);
+      setMateriasFiltradas(response.data);
+    } catch (error) {
+      console.error('Error al obtener las secciones:', error);
     }
-    setMateriasFiltradas(materiasFiltradas);
+  };
+
+  const obtenerAulas = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5104/api/AulaApi', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setAulas(response.data);
+    } catch (error) {
+      console.error('Error al obtener las aulas:', error);
+    }
+  };
+
+  useEffect(() => {
+    filtrarSecciones();
+  }, [materiaSeleccionada, aulaSeleccionada]);
+
+  const filtrarSecciones = () => {
+    let seccionesFiltradas = secciones;
+    if (materiaSeleccionada) {
+      seccionesFiltradas = seccionesFiltradas.filter(seccion => seccion.materias?.codigoMateria === materiaSeleccionada);
+    }
+    if (aulaSeleccionada) {
+      seccionesFiltradas = seccionesFiltradas.filter(seccion => seccion.codigoAula === aulaSeleccionada);
+    }
+    setMateriasFiltradas(seccionesFiltradas);
   };
 
   return (
@@ -48,53 +67,59 @@ export function Secciones  ()  {
       <h1 className={styles.heading}>Secciones</h1>
       <div className={styles.filtros}>
         <div className={styles.filtroGrupo}>
-          <label className={styles.label}>Materias</label>
+          <label className={styles.label}>Materia</label>
           <select 
             value={materiaSeleccionada} 
             onChange={(e) => setMateriaSeleccionada(e.target.value)}
             className={styles.select}
           >
             <option value="">Todas</option>
-            {materiasPorArea[areaSeleccionada].map(materia => (
-              <option key={materia.id} value={materia.nombre}>{materia.nombre}</option>
+            {[...new Set(secciones.map(seccion => seccion.materias?.codigoMateria).filter(Boolean))].map(codigoMateria => (
+              <option key={codigoMateria} value={codigoMateria}>{codigoMateria}</option>
             ))}
           </select>
         </div>
         <div className={styles.filtroGrupo}>
-          <label className={styles.label}>Area</label>
+          <label className={styles.label}>Aula</label>
           <select 
-            value={areaSeleccionada} 
-            onChange={(e) => setAreaSeleccionada(e.target.value)}
+            value={aulaSeleccionada} 
+            onChange={(e) => setAulaSeleccionada(e.target.value)}
             className={styles.select}
           >
-            <option value="Humanidades">Humanidades</option>
+            <option value="">Todas</option>
+            {aulas.map(aula => (
+              <option key={aula.codigoAula} value={aula.codigoAula}>{aula.codigoAula}</option>
+            ))}
           </select>
         </div>
       </div>
-      <table className={styles.seccionesTabla}>
-        <thead>
-          <tr>
-            <th>Materias</th>
-            <th>Sección</th>
-            <th>Horario</th>
-            <th>Profesor</th>
-            <th>Cupo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {materiasFiltradas.map(materia => (
-            <tr key={materia.id}>
-              <td>{materia.nombre}</td>
-              <td>{materia.seccion}</td>
-              <td>{materia.horario}</td>
-              <td>{materia.profesor}</td>
-              <td>{materia.cupo}</td>
+      <div className={styles.tablaContainer}>
+        <h2>Secciones</h2>
+        <table className={styles.seccionesTabla}>
+          <thead>
+            <tr>
+              <th>Código Sección</th>
+              <th>Código Materia</th>
+              <th>Código Aula</th>
+              <th>Horario</th>
+              <th>Cupo</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {materiasFiltradas.map(seccion => (
+              <tr key={seccion.codigoSeccion}>
+                <td>{seccion.codigoSeccion}</td>
+                <td>{seccion.materias?.codigoMateria}</td>
+                <td>{seccion.codigoAula || 'No asignada'}</td>
+                <td>{seccion.horario}</td>
+                <td>{seccion.cupo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
-};
+}
 
 export default Secciones;

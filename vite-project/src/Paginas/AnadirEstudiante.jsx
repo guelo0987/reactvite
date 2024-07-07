@@ -1,24 +1,47 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from '../Estilos/EstPaginas/AnadirEstudiante.module.css';
 import Header from '../Componentes/Header';
 import Sidebar from '../Componentes/SidebarAdmin';
 
 export function AnadirEstudiante() {
   const [formData, setFormData] = useState({
-    nombres: '',
-    apellidos: '',
-    correo: '',
-    telefono: '',
-    genero: 'Femenino',
-    direccion: '',
-    ciudad: 'Santo Domingo',
+    id: '',
+    nombreEstudiante: '',
+    direccionEstudiante: '',
     nacionalidad: 'Dominicana',
-    carrera: 'Diseño Gráfico - DG',
-    master: 'Master en UX/UI'
+    sexoEstudiante: 'F',
+    ciudadEstudiante: 'Santo Domingo',
+    telefonoEstudiante: '',
+    correoEstudiante: '',
+    fechaIngreso: new Date().toISOString().split('T')[0],
+    periodosCursados: 1,
+    indiceGeneral: 4.00,
+    indicePeriodo: 4.00,
+    periodoActual: '',
+    condicionAcademica: 'Activo',
+    creditosAprobados: 0,
+    contraseñaEstudiante: '',
+    carreraId: '',
+    alertas: '',
+    rol: 'Estudiante'
   });
 
+  const [carreras, setCarreras] = useState([]);
   const [errors, setErrors] = useState({});
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const response = await axios.get('http://localhost:5104/api/CarreraApi');
+        setCarreras(response.data);
+      } catch (error) {
+        console.error('Error al cargar las carreras', error);
+      }
+    };
+    fetchCarreras();
+  }, []);
 
   useEffect(() => {
     if (showSuccessMessage) {
@@ -46,36 +69,55 @@ export function AnadirEstudiante() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.nombres) newErrors.nombres = 'El nombre es obligatorio';
-    if (!formData.apellidos) newErrors.apellidos = 'Los apellidos son obligatorios';
-    if (!formData.correo) newErrors.correo = 'El correo electrónico es obligatorio';
-    if (!formData.telefono) newErrors.telefono = 'El teléfono es obligatorio';
-    if (!formData.direccion) newErrors.direccion = 'La dirección es obligatoria';
-    if (!formData.carrera) newErrors.carrera = 'La carrera es obligatoria';
+    if (!formData.id) newErrors.id = 'El ID es obligatorio';
+    if (!formData.nombreEstudiante) newErrors.nombreEstudiante = 'El nombre es obligatorio';
+    if (!formData.direccionEstudiante) newErrors.direccionEstudiante = 'La dirección es obligatoria';
+    if (!formData.correoEstudiante) newErrors.correoEstudiante = 'El correo electrónico es obligatorio';
+    if (!formData.telefonoEstudiante) newErrors.telefonoEstudiante = 'El teléfono es obligatorio';
+    if (!formData.contraseñaEstudiante) newErrors.contraseñaEstudiante = 'La contraseña es obligatoria';
+    if (!formData.carreraId) newErrors.carreraId = 'La carrera es obligatoria';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Aquí iría la lógica para enviar los datos (por ahora simplemente mostraremos el mensaje de éxito)
-      setShowSuccessMessage(true);
-      // Resetear los campos del formulario
-      setFormData({
-        nombres: '',
-        apellidos: '',
-        correo: '',
-        telefono: '',
-        genero: 'Femenino',
-        direccion: '',
-        ciudad: 'Santo Domingo',
-        nacionalidad: 'Dominicana',
-        carrera: 'Diseño Gráfico - DG',
-        master: 'Master en UX/UI'
-      });
-      setErrors({});
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      try {
+        await axios.post('http://localhost:5104/api/Estudiante/CreateEstudiante', formData, config);
+        setShowSuccessMessage(true);
+        // Resetear los campos del formulario
+        setFormData({
+          id: '',
+          nombreEstudiante: '',
+          direccionEstudiante: '',
+          nacionalidad: 'Dominicana',
+          sexoEstudiante: 'F',
+          ciudadEstudiante: 'Santo Domingo',
+          telefonoEstudiante: '',
+          correoEstudiante: '',
+          fechaIngreso: new Date().toISOString().split('T')[0],
+          periodosCursados: 1,
+          indiceGeneral: 4.00,
+          indicePeriodo: 4.00,
+          periodoActual: '',
+          condicionAcademica: 'Activo',
+          creditosAprobados: 0,
+          contraseñaEstudiante: '',
+          carreraId: '',
+          alertas: '',
+          rol: 'Estudiante'
+        });
+        setErrors({});
+      } catch (error) {
+        setErrors({ api: 'Error al enviar los datos. Por favor, intente nuevamente.' });
+      }
     } else {
       console.log('Formulario inválido');
     }
@@ -85,29 +127,32 @@ export function AnadirEstudiante() {
     <div className={styles["anadir-estudiante"]}>
       <Header />
       <Sidebar />
-      <h2 className={styles.titulo}>Usuarios</h2>
+      <h2 className={styles.titulo}>Añadir Estudiante</h2>
       <form onSubmit={handleSubmit}>
         <div className={styles["campo-completo"]}>
+          <label>ID*</label>
+          <input
+            type="text"
+            name="id"
+            placeholder="ID"
+            value={formData.id}
+            onChange={handleChange}
+            className={errors.id ? styles.error : ''}
+          />
+          {errors.id && <span className={styles["error-message"]}>{errors.id}</span>}
+        </div>
+
+        <div className={styles["campo-completo"]}>
           <label>Nombre completo*</label>
-          <div className={styles["nombre-completo"]}>
-            <input
-              type="text"
-              name="nombres"
-              placeholder="Nombres"
-              value={formData.nombres}
-              onChange={handleChange}
-              className={errors.nombres ? styles.error : ''}
-            />
-            <input
-              type="text"
-              name="apellidos"
-              placeholder="Apellidos"
-              value={formData.apellidos}
-              onChange={handleChange}
-              className={errors.apellidos ? styles.error : ''}
-            />
-          </div>
-          {(errors.nombres || errors.apellidos) && <span className={styles["error-message"]}>{errors.nombres || errors.apellidos}</span>}
+          <input
+            type="text"
+            name="nombreEstudiante"
+            placeholder="Nombre Completo"
+            value={formData.nombreEstudiante}
+            onChange={handleChange}
+            className={errors.nombreEstudiante ? styles.error : ''}
+          />
+          {errors.nombreEstudiante && <span className={styles["error-message"]}>{errors.nombreEstudiante}</span>}
         </div>
 
         <div className={styles["campo-grupo"]}>
@@ -115,32 +160,32 @@ export function AnadirEstudiante() {
             <label>Correo electrónico*</label>
             <input
               type="email"
-              name="correo"
+              name="correoEstudiante"
               placeholder="correo@universidad.com"
-              value={formData.correo}
+              value={formData.correoEstudiante}
               onChange={handleChange}
-              className={errors.correo ? styles.error : ''}
+              className={errors.correoEstudiante ? styles.error : ''}
             />
-            {errors.correo && <span className={styles["error-message"]}>{errors.correo}</span>}
+            {errors.correoEstudiante && <span className={styles["error-message"]}>{errors.correoEstudiante}</span>}
           </div>
           <div className={styles.campo}>
             <label>Teléfono*</label>
             <input
               type="tel"
-              name="telefono"
+              name="telefonoEstudiante"
               placeholder="***-***-****"
-              value={formData.telefono}
+              value={formData.telefonoEstudiante}
               onChange={handleChange}
-              className={errors.telefono ? styles.error : ''}
+              className={errors.telefonoEstudiante ? styles.error : ''}
             />
-            {errors.telefono && <span className={styles["error-message"]}>{errors.telefono}</span>}
+            {errors.telefonoEstudiante && <span className={styles["error-message"]}>{errors.telefonoEstudiante}</span>}
           </div>
           <div className={styles.campo}>
             <label>Género*</label>
-            <select name="genero" value={formData.genero} onChange={handleChange}>
-              <option value="Femenino">Femenino</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Otro">Otro</option>
+            <select name="sexoEstudiante" value={formData.sexoEstudiante} onChange={handleChange}>
+              <option value="F">Femenino</option>
+              <option value="M">Masculino</option>
+              <option value="O">Otro</option>
             </select>
           </div>
         </div>
@@ -150,17 +195,17 @@ export function AnadirEstudiante() {
             <label>Dirección*</label>
             <input
               type="text"
-              name="direccion"
+              name="direccionEstudiante"
               placeholder="Dirección #, Sector"
-              value={formData.direccion}
+              value={formData.direccionEstudiante}
               onChange={handleChange}
-              className={errors.direccion ? styles.error : ''}
+              className={errors.direccionEstudiante ? styles.error : ''}
             />
-            {errors.direccion && <span className={styles["error-message"]}>{errors.direccion}</span>}
+            {errors.direccionEstudiante && <span className={styles["error-message"]}>{errors.direccionEstudiante}</span>}
           </div>
           <div className={styles.campo}>
             <label>Ciudad*</label>
-            <select name="ciudad" value={formData.ciudad} onChange={handleChange}>
+            <select name="ciudadEstudiante" value={formData.ciudadEstudiante} onChange={handleChange}>
               <option value="Santo Domingo">Santo Domingo</option>
               {/* Agrega más ciudades según sea necesario */}
             </select>
@@ -177,25 +222,30 @@ export function AnadirEstudiante() {
         <div className={styles["campo-completo"]}>
           <label>Carrera*</label>
           <select
-            name="carrera"
-            value={formData.carrera}
+            name="carreraId"
+            value={formData.carreraId}
             onChange={handleChange}
-            className={errors.carrera ? styles.error : ''}
+            className={errors.carreraId ? styles.error : ''}
           >
             <option value="">Seleccione una carrera</option>
-            <option value="Diseño Gráfico - DG">Diseño Gráfico - DG</option>
-            {/* Agrega más carreras según sea necesario */}
+            {carreras.length > 0 && carreras.map(carrera => (
+              <option key={carrera.carreraId} value={carrera.carreraId}>{carrera.nombreCarrera}</option>
+            ))}
           </select>
-          {errors.carrera && <span className={styles["error-message"]}>{errors.carrera}</span>}
+          {errors.carreraId && <span className={styles["error-message"]}>{errors.carreraId}</span>}
         </div>
 
         <div className={styles["campo-completo"]}>
-          <label>Master</label>
-          <select name="master" value={formData.master} onChange={handleChange}>
-            <option value="">Seleccione un master (opcional)</option>
-            <option value="Master en UX/UI">Master en UX/UI</option>
-            {/* Agrega más masters según sea necesario */}
-          </select>
+          <label>Contraseña*</label>
+          <input
+            type="password"
+            name="contraseñaEstudiante"
+            placeholder="Contraseña"
+            value={formData.contraseñaEstudiante}
+            onChange={handleChange}
+            className={errors.contraseñaEstudiante ? styles.error : ''}
+          />
+          {errors.contraseñaEstudiante && <span className={styles["error-message"]}>{errors.contraseñaEstudiante}</span>}
         </div>
 
         <div className={styles.botones}>
@@ -205,6 +255,11 @@ export function AnadirEstudiante() {
         {showSuccessMessage && (
           <div className={styles.notification}>
             <p>¡Los datos se ingresaron correctamente!</p>
+          </div>
+        )}
+        {errors.api && (
+          <div className={styles["error-message"]}>
+            <p>{errors.api}</p>
           </div>
         )}
       </form>

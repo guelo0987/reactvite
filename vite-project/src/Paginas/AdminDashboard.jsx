@@ -1,18 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SidebarAdmin from "../Componentes/SidebarAdmin.jsx";
 import Header from "../Componentes/Header.jsx";
 import { TaskModal } from "../Componentes/TaskModal.jsx";
 import "../Estilos/EstPaginas/AdminDashboard.css";
 import PhotoPerfil from '../assets/perfil sin foto.png';
+import { useAuth } from "../Componentes/AutenticacionUsuario.jsx";
 
 export function AdminDashboard() {
-    const userInfo = {
-        nombre: "Carlos Ferrero",
-        puesto: "Administrador",
-        correo: "carlosferrero1@gmail.com",
-        telefono: "809-123-4567",
-        fechaIngreso: "1 Mayo 2021"
-    };
+    const { user } = useAuth(); // Obtener el usuario desde el contexto
 
     const stats = [
         { label: "Profesores", value: "7,500" },
@@ -20,16 +15,29 @@ export function AdminDashboard() {
         { label: "Secciones", value: "7,500" }
     ];
 
-    const initialTasks = [
-        { task: "Preparar informe", description: "Informe de ventas trimestral", dueDate: "2024-07-15", completed: false },
-        // ... más tareas (hasta completar un número mayor a 5 para probar la paginación)
-    ];
-
-    const [tasks, setTasks] = useState(initialTasks);
+    const [tasks, setTasks] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState(null);
     const tasksPerPage = 5;
+
+    // Cargar tareas desde sessionStorage
+    useEffect(() => {
+        const savedTasks = sessionStorage.getItem('tasks');
+        if (savedTasks) {
+            setTasks(JSON.parse(savedTasks));
+        } else {
+            setTasks([
+                { task: "Preparar informe", description: "Informe de ventas trimestral", dueDate: "2024-07-15", completed: false },
+                // Más tareas iniciales
+            ]);
+        }
+    }, []);
+
+    // Guardar tareas en sessionStorage
+    useEffect(() => {
+        sessionStorage.setItem('tasks', JSON.stringify(tasks));
+    }, [tasks]);
 
     const handleAddTask = () => {
         setTaskToEdit(null);
@@ -88,12 +96,12 @@ export function AdminDashboard() {
                 <div className="user-info">
                     <img src={PhotoPerfil} alt="Profile" className="profile-image" />
                     <div className="user-details">
-                        <h2 className="user-profile-title">Welcome, {userInfo.nombre}</h2>
-                        <div className="user-profile-detail"><span className="user-profile-detail-label">Nombre:</span> {userInfo.nombre}</div>
-                        <div className="user-profile-detail"><span className="user-profile-detail-label">Puesto:</span> {userInfo.puesto}</div>
-                        <div className="user-profile-detail"><span className="user-profile-detail-label">Correo:</span> {userInfo.correo}</div>
-                        <div className="user-profile-detail"><span className="user-profile-detail-label">Teléfono:</span> {userInfo.telefono}</div>
-                        <div className="user-profile-detail"><span className="user-profile-detail-label">Fecha de Ingreso:</span> {userInfo.fechaIngreso}</div>
+                        <h2 className="user-profile-title">Welcome, {user?.nombreAdmin}</h2>
+                        <div className="user-profile-detail"><span className="user-profile-detail-label">Nombre:</span> {user?.nombreAdmin}</div>
+                        <div className="user-profile-detail"><span className="user-profile-detail-label">Puesto:</span> {user?.rol}</div>
+                        <div className="user-profile-detail"><span className="user-profile-detail-label">Correo:</span> {user?.correoAdmin}</div>
+                        <div className="user-profile-detail"><span className="user-profile-detail-label">Teléfono:</span> {user?.telefono}</div>
+                        <div className="user-profile-detail"><span className="user-profile-detail-label">Fecha de Ingreso:</span> {user?.fechaIngreso}</div>
                     </div>
                 </div>
                 <div className="dashboard-content">

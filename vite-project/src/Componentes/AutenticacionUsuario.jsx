@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -9,6 +9,16 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    const role = localStorage.getItem('role');
+
+    if (token && storedUser && role) {
+      setUser({ ...JSON.parse(storedUser), role });
+    }
+  }, []);
 
   const login = async (username, password) => {
     try {
