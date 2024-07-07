@@ -1,174 +1,148 @@
 import React, { useState } from 'react';
-import jsPDF from 'jspdf'; // Asegúrate de importar jsPDF para poder usarlo
-
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { useAuth } from "../Componentes/AutenticacionUsuario.jsx";
 import Sidebar from '../Componentes/Sidebar2.jsx';
 import Header from '../Componentes/Header.jsx';
 import styles from '../Estilos/EstPaginas/HojaPago.module.css';
 import logoImage from '../assets/LogoUniOscuro.png';
 
 export function HojaPago() {
-  const [year, setYear] = useState('2023');
-  const [period, setPeriod] = useState('NOV - JAN');
+  const { user } = useAuth();
+  const [year, setYear] = useState('2024');
+  const [period, setPeriod] = useState('MAY-JUL');
   const [isGenerated, setIsGenerated] = useState(false);
   const [studentData, setStudentData] = useState(null);
+  const [cuentasPorPagar, setCuentasPorPagar] = useState([]);
+  const [montoTotal, setMontoTotal] = useState(0);
+  const [message, setMessage] = useState('');
+
+  const obtenerCuentasPorPagar = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No se encontró el token de autenticación');
+      }
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      const cuentasResponse = await axios.get(`http://localhost:5104/api/CuentaPorPagar/cuentaporpagar`, {
+        ...config,
+        params: {
+          periodo: `${year}-${period}`,
+          codigoEstudiante: user.id
+        }
+      });
+      const cuentasData = cuentasResponse.data;
+      setCuentasPorPagar(cuentasData);
+      
+      const total = cuentasData.reduce((sum, cuenta) => sum + cuenta.montoTotalaPagar, 0);
+      setMontoTotal(total);
+
+      setStudentData({
+        trimestre: `${year}-${period}`,
+        nombre: user.nombreEstudiante,
+        carrera: user.nombreCarrera,
+        tipoTarifa: 'Dominicano', // Asumiendo que este dato viene del usuario
+        conceptos: cuentasData.map(cuenta => ({
+          concepto: cuenta.nombreMateria,
+          aula: cuenta.aula,
+          horarios: cuenta.horario,
+          cr: cuenta.materias?.creditos || 'N/A', // Asumiendo que tienes esta información
+          fecha: new Date().toLocaleDateString(), // Fecha actual como ejemplo
+          deudaCorriente: cuenta.montoTotalaPagar
+        })),
+        balanceActual: total,
+        primerPago: total * 0.4, // Ejemplo: 40% del total
+        segundoPago: total * 0.3, // Ejemplo: 30% del total
+        tercerPago: total * 0.3, // Ejemplo: 30% del total
+        fechaPrimerPago: '05/may./2024', // Ejemplo
+        fechaSegundoPago: '26/may./2024', // Ejemplo
+        fechaTercerPago: '23/jun./2024' // Ejemplo
+      });
+
+      setIsGenerated(true);
+    } catch (error) {
+      console.error('Error al obtener las cuentas por pagar:', error);
+      setMessage('Error al obtener los datos de las cuentas por pagar');
+    }
+  };
 
   const handleGenerateInvoice = () => {
-    const data = {
-      nombre: 'Merna Julia Rodriguez',
-      carrera: 'Diseño Grafico (DG) - Master UX/UI',
-      id: 114856,
-      fechaIngreso: '1 Mayo 2022',
-      creditosAprobados: '43 de 250',
-      materiasCursadas: '10 de 50',
-      items: [
-        {
-          descripcion: 'Créditos',
-          qty: 20,
-          price: 3500.10,
-          amount: 70002.00
-        },
-        {
-          descripcion: 'Uso de laboratorios',
-          qty: 1,
-          price: 3000.00,
-          amount: 3000.00
-        },
-        {
-          descripcion: 'Carnet',
-          qty: 1,
-          price: 2000.00,
-          amount: 2000.00
-        },
-        {
-          descripcion: 'Descuento por índice',
-          qty: 1,
-          price: 0,
-          amount: 2650.00
-        }
-      ],
-      pagos: [
-        {
-          tipo: 'Primer pago',
-          monto: 32558.40,
-          fecha: '1 nov 2022'
-        },
-        {
-          tipo: 'Segundo pago',
-          monto: 14470.40,
-          fecha: '20 dec 2022'
-        },
-        {
-          tipo: 'Tercer pago',
-          monto: 32558.40,
-          fecha: '12 jan 2023'
-        }
-      ]
-    };
-
-    setStudentData(data);
-    setIsGenerated(true);
+    obtenerCuentasPorPagar();
   };
 
   const handleDownloadPDF = () => {
     if (!studentData) return;
-  
+
     const doc = new jsPDF();
-    let yPos = 5;
-  
-    // Añadir el logo en la parte superior del documento
-    const imgWidth = 50; // Ancho de la imagen en el PDF
-    const imgHeight = 50; // Alto de la imagen en el PDF
-    const x = (doc.internal.pageSize.getWidth() - imgWidth) / 2; // Centrar la imagen horizontalmente
+    let yPos = 20;
+
+    // Añadir el logo
+    const imgWidth = 40;
+    const imgHeight = 40;
+    const x = (doc.internal.pageSize.getWidth() - imgWidth) / 2;
     doc.addImage(logoImage, 'PNG', x, yPos, imgWidth, imgHeight);
-    yPos += imgHeight + 5; // Incrementar yPos para dejar espacio más cerca del logo
-  
-    // Añadir texto debajo del logo
-    doc.setFontSize(19.5);
-    doc.setTextColor('#000000'); // Color negro
-    doc.text('Universidad de Innovación Tecnológica', 105, yPos, { align: 'center' });
-    yPos += 10; // Aumentar espacio después del texto
-  
-    // Añadir título centrado
+    yPos += imgHeight + 10;
+
+    // Título
     doc.setFontSize(18);
-    doc.setTextColor('#000000'); // Color negro para el título principal
     doc.text('Hoja de Pago', 105, yPos, { align: 'center' });
-    yPos += 15; // Aumentar espacio después del título
-  
-    // Añadir línea separadora
-    doc.setLineWidth(0.5);
-    doc.line(20, yPos, 190, yPos); // Línea horizontal
-    yPos += 10; // Aumentar espacio después de la línea
-  
-    // Añadir detalles del estudiante
+    yPos += 15;
+
+    // Información del estudiante
     doc.setFontSize(12);
-    doc.setTextColor('#000000'); // Color negro para el texto normal
+    doc.text(`Trimestre: ${studentData.trimestre}`, 20, yPos);
+    yPos += 10;
     doc.text(`Nombre: ${studentData.nombre}`, 20, yPos);
     yPos += 10;
     doc.text(`Carrera: ${studentData.carrera}`, 20, yPos);
     yPos += 10;
-    doc.text(`ID: ${studentData.id}`, 20, yPos);
-    yPos += 10;
-    doc.text(`Fecha de Ingreso: ${studentData.fechaIngreso}`, 20, yPos);
-    yPos += 10;
-    doc.text(`Créditos Aprobados: ${studentData.creditosAprobados}`, 20, yPos);
-    yPos += 10;
-    doc.text(`Materias Cursadas: ${studentData.materiasCursadas}`, 20, yPos);
-    yPos += 20;
-  
-    // Añadir tabla de items
-    doc.setFontSize(14);
-    doc.setTextColor('#000000'); // Color negro para el texto de la tabla
-    doc.text('Detalle de Factura', 20, yPos);
-    yPos += 10;
-  
-    // Añadir encabezados de tabla
-    doc.setFont('helvetica', 'bold');
-    doc.text('Descripción', 20, yPos);
-    doc.text('Cantidad', 100, yPos);
-    doc.text('Precio Unitario', 130, yPos);
-    doc.text('Monto', 170, yPos);
-    yPos += 5;
-    doc.line(20, yPos, 190, yPos); // Línea horizontal después de encabezados
-    yPos += 5;
-    doc.setFont('helvetica', 'normal');
-  
-    // Añadir filas de la tabla
-    studentData.items.forEach((item, index) => {
-      yPos += 10;
-      doc.text(`${item.descripcion}`, 20, yPos);
-      doc.text(`${item.qty}`, 100, yPos);
-      doc.text(`$${item.price.toFixed(2)}`, 130, yPos);
-      doc.text(`$${item.amount.toFixed(2)}`, 170, yPos);
+    doc.text(`Tipo Tarifa: ${studentData.tipoTarifa}`, 20, yPos);
+    yPos += 15;
+
+    // Tabla de conceptos
+    const headers = ['Concepto', '(Aula) Horarios', 'Cr', 'Fecha', 'Deuda Corriente'];
+    const data = studentData.conceptos.map(c => [
+      c.concepto,
+      `(${c.aula}) ${c.horarios}`,
+      c.cr,
+      c.fecha,
+      `$${c.deudaCorriente.toFixed(2)}`
+    ]);
+
+    doc.autoTable({
+      startY: yPos,
+      head: [headers],
+      body: data,
+      theme: 'grid',
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+      margin: { top: 20 }
     });
-    yPos += 10; // Aumentar espacio después de la tabla
-  
-    // Añadir sección de pagos
-    doc.setFontSize(14);
-    doc.text('Pagos', 20, yPos);
+
+    yPos = doc.lastAutoTable.finalY + 20;
+
+    // Balance y pagos
+    doc.setFontSize(12);
+    doc.text(`Balance Actual: $${studentData.balanceActual.toFixed(2)}`, 20, yPos);
+    yPos += 15;
+    doc.text(`Primer Pago: $${studentData.primerPago.toFixed(2)} - Fecha: ${studentData.fechaPrimerPago}`, 20, yPos);
     yPos += 10;
-  
-    // Añadir encabezados de pagos
-    doc.setFont('helvetica', 'bold');
-    doc.text('Tipo de Pago', 20, yPos);
-    doc.text('Monto', 100, yPos);
-    doc.text('Fecha', 150, yPos);
-    yPos += 5;
-    doc.line(20, yPos, 190, yPos); // Línea horizontal después de encabezados
-    yPos += 5;
-    doc.setFont('helvetica', 'normal');
-  
-    // Añadir filas de la sección de pagos
-    studentData.pagos.forEach((pago, index) => {
-      yPos += 10;
-      doc.text(`${pago.tipo}`, 20, yPos);
-      doc.text(`$${pago.monto.toFixed(2)}`, 100, yPos);
-      doc.text(`${pago.fecha}`, 150, yPos);
-    });
-  
-    // Guardar el PDF
+    doc.text(`Segundo Pago: $${studentData.segundoPago.toFixed(2)} - Fecha: ${studentData.fechaSegundoPago}`, 20, yPos);
+    yPos += 10;
+    doc.text(`Tercer Pago: $${studentData.tercerPago.toFixed(2)} - Fecha: ${studentData.fechaTercerPago}`, 20, yPos);
+
     doc.save('hoja_de_pago.pdf');
   };
   
+  if (!user) {
+    return <div>Cargando información del usuario...</div>;
+  }
+
   return (
     <div className={styles['hoja-de-pago-page']}>
       <Header />
@@ -186,7 +160,6 @@ export function HojaPago() {
               >
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
-                {/* Agrega más opciones según sea necesario */}
               </select>
             </div>
             <div className={styles['filter-item']}>
@@ -196,9 +169,10 @@ export function HojaPago() {
                 value={period}
                 onChange={(e) => setPeriod(e.target.value)}
               >
-                <option value="NOV - JAN">NOV - JAN</option>
-                <option value="FEB - APR">FEB - APR</option>
-                {/* Agrega más opciones según sea necesario */}
+                <option value="FEB-ABR">FEB-ABR</option>
+                <option value="MAY-JUL">MAY-JUL</option>
+                <option value="AGO-OCT">AGO-OCT</option>
+                <option value="NOV-ENE">NOV-ENE</option>
               </select>
             </div>
             <button onClick={handleGenerateInvoice} className={styles['generate-button']}>
@@ -210,72 +184,60 @@ export function HojaPago() {
               </button>
             )}
           </div>
+          {message && <div className={styles['message']}>{message}</div>}
           {isGenerated && studentData && (
-            <div>
-              <div className={styles['student-details']}>
-                <div className={styles['student-info']}>
-                  <div>
-                    <h2>Nombre</h2>
-                    <p>{studentData.nombre}</p>
-                  </div>
-                  <div>
-                    <h2>Carrera</h2>
-                    <p>{studentData.carrera}</p>
-                  </div>
-                  <div>
-                    <h2>ID</h2>
-                    <p>{studentData.id}</p>
-                  </div>
+            <div className={styles['hoja-pago']}>
+              <div className={styles['encabezado']}>
+                <div>
+                  <p><strong>Trimestre:</strong> {studentData.trimestre}</p>
+                  <p><strong>Nombre:</strong> {studentData.nombre}</p>
+                  <p><strong>Carrera:</strong> {studentData.carrera}</p>
                 </div>
-                <div className={styles['student-info']}>
-                  <div>
-                    <h2>Fecha Ingreso</h2>
-                    <p>{studentData.fechaIngreso}</p>
-                  </div>
-                  <div>
-                    <h2>Créditos Aprobados</h2>
-                    <p>{studentData.creditosAprobados}</p>
-                  </div>
-                  <div>
-                    <h2>Materias cursadas</h2>
-                    <p>{studentData.materiasCursadas}</p>
-                  </div>
+                <div>
+                  <p><strong>Tipo Tarifa:</strong> {studentData.tipoTarifa}</p>
                 </div>
               </div>
-              <div className={styles['invoice-table']}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Descripción</th>
-                      <th>Qty</th>
-                      <th>Price</th>
-                      <th>Amount</th>
+              
+              <table className={styles['tabla-conceptos']}>
+                <thead>
+                  <tr>
+                    <th>Concepto</th>
+                    <th>(Aula) Horarios</th>
+                    <th>Cr</th>
+                    <th>Fecha</th>
+                    <th>Deuda Corriente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentData.conceptos.map((concepto, index) => (
+                    <tr key={index}>
+                      <td>{concepto.concepto}</td>
+                      <td>({concepto.aula}) {concepto.horarios}</td>
+                      <td>{concepto.cr}</td>
+                      <td>{concepto.fecha}</td>
+                      <td>${concepto.deudaCorriente.toFixed(2)}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {studentData.items.map((item, index) => (
-                      <tr key={index}>
-                        <td>{item.descripcion}</td>
-                        <td>{item.qty}</td>
-                        <td>{item.price.toFixed(2)}</td>
-                        <td>{item.amount.toFixed(2)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </tbody>
+              </table>
+              
+              <div className={styles['balance']}>
+                <p><strong>Balance Actual:</strong> ${studentData.balanceActual.toFixed(2)}</p>
               </div>
-              <div className={styles['payments']}>
-                {studentData.pagos.map((pago, index) => (
-                  <div key={index} className={styles['payment']}>
-                    <h3>{pago.tipo}</h3>
-                    <p>
-                      $ {pago.monto.toFixed(2)}
-                    </p>
-                    <p>
-                      Fecha de {pago.tipo.toLowerCase()} pago: {pago.fecha}
-                    </p>
-                  </div>
-                ))}
+              
+              <div className={styles['pagos']}>
+                <div>
+                  <p><strong>Primer Pago:</strong> ${studentData.primerPago.toFixed(2)}</p>
+                  <p><strong>Fecha:</strong> {studentData.fechaPrimerPago}</p>
+                </div>
+                <div>
+                  <p><strong>Segundo Pago:</strong> ${studentData.segundoPago.toFixed(2)}</p>
+                  <p><strong>Fecha:</strong> {studentData.fechaSegundoPago}</p>
+                </div>
+                <div>
+                  <p><strong>Tercer Pago:</strong> ${studentData.tercerPago.toFixed(2)}</p>
+                  <p><strong>Fecha:</strong> {studentData.fechaTercerPago}</p>
+                </div>
               </div>
             </div>
           )}
